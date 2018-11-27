@@ -54,7 +54,7 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 		return errors.New(msg)
 	}
 
-	tmpDir := destDir + ".acdu/"
+	tmpDir := destDir + ".acdu-tmp/"
 
 	err = os.RemoveAll(tmpDir)
 	if err != nil {
@@ -111,7 +111,7 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 	}
 	common.LogOK(fmt.Sprintf("Removed temp zip file %v", tmpRtBunZipFile))
 
-	rtBundleTemplateTransCount := 6
+	rtBundleTemplateTransCount := 8
 
 	newOutputUnzipDir := tmpDir + parms.BundleName + "/"
 	err = os.Rename(outputZipDir, newOutputUnzipDir)
@@ -127,23 +127,33 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 	theStr = strings.Replace(theStr, "<groupId>org.activiti.cloud.examples</groupId>", fmt.Sprintf("<groupId>%v</groupId>", parms.PackageName), 1)
 	theStr = strings.Replace(theStr, "<artifactId>example-runtime-bundle</artifactId>", fmt.Sprintf("<artifactId>%v</artifactId>", parms.BundleName), 1)
 	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
-	ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	err = ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	if err != nil {
+		return err
+	}
 	common.LogOK(fmt.Sprintf("RT Bundle Transform 2 of %v: Rule adjust group and artifact id in pom.xml. Adjusted with %v and %v with %v bytes at %v", rtBundleTemplateTransCount, parms.PackageName, parms.BundleName, len(theStr), theFile))
 
 	theFile = newOutputUnzipDir + "skaffold.yaml"
 	theBytes, err = ioutil.ReadFile(theFile)
 	theStr = string(theBytes)
 	theStr = strings.Replace(theStr, "{{.DOCKER_REGISTRY}}/activiti/example-runtime-bundle", fmt.Sprintf("{{.DOCKER_REGISTRY}}/activiti/%v", parms.BundleName), 3)
+	theStr = strings.Replace(theStr, "changeme", parms.BundleName, 1)
 	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
-	ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 3 of %v: Rule 'adjust 3 template uses in skaffold.yaml. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+	err = ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	if err != nil {
+		return err
+	}
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 3 of %v: Rule 'adjust 4 uses in skaffold.yaml. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
 
 	theFile = newOutputUnzipDir + "Jenkinsfile"
 	theBytes, err = ioutil.ReadFile(theFile)
 	theStr = string(theBytes)
 	theStr = strings.Replace(theStr, "example-runtime-bundle", parms.BundleName, 3)
 	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
-	ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	err = ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	if err != nil {
+		return err
+	}
 	common.LogOK(fmt.Sprintf("RT Bundle Transform 4 of %v: Rule adjust 3 uses in Jenkinsfile. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
 
 	renameFrom := newOutputUnzipDir + "charts/example-runtime-bundle"
@@ -155,12 +165,36 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 	}
 	common.LogOK(fmt.Sprintf("RT Bundle Transform 5 of %v: Rule rename the charts folder. Adjusted to %v", rtBundleTemplateTransCount, renameTo))
 
+	theFile = newOutputUnzipDir + "src/main/resources/application.properties"
+	theBytes, err = ioutil.ReadFile(theFile)
+	theStr = string(theBytes)
+	theStr = strings.Replace(theStr, "spring.application.name=${ACT_RB_APP_NAME:rb-my-app}", fmt.Sprintf("spring.application.name=${ACT_RB_APP_NAME:%v}", parms.BundleName), 1)
+	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
+	err = ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	if err != nil {
+		return err
+	}
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 6 of %v: Rule change the spring.application.name. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+
+	theFile = newOutputUnzipDir + fmt.Sprintf("charts/%v/values.yaml", parms.BundleName)
+	theBytes, err = ioutil.ReadFile(theFile)
+	theStr = string(theBytes)
+	theStr = strings.Replace(theStr, "name: rb-my-app", fmt.Sprintf("name: %v", parms.BundleName), 1)
+	theStr = strings.Replace(theStr, "repository: draft", fmt.Sprintf("repository: %v", parms.BundleName), 1)
+	theStr = strings.Replace(theStr, "tag: dev", "tag: latest", 1)
+	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
+	err = ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	if err != nil {
+		return err
+	}
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 7 of %v: Rule change helm service name and repository to bundle name and tag to 'latest'. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+
 	err = os.Rename(newOutputUnzipDir, finalOutDirectory)
 	if err != nil {
 		common.LogError(err.Error())
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 6 of %v: Rule move the folder to the desired destination. Adjusted to %v", rtBundleTemplateTransCount, finalOutDirectory))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 8 of %v: Rule move the folder to the desired destination. Adjusted to %v", rtBundleTemplateTransCount, finalOutDirectory))
 
 	common.LogInfo("Ready to use the Activiti Cloud Runtime Bundle")
 

@@ -16,20 +16,40 @@ package cmd
 
 import (
 	"github.com/doug4j/acdu/pkg/common"
+	"github.com/doug4j/acdu/pkg/install/installprocbun"
 
 	"github.com/spf13/cobra"
 )
 
 var installProcessBundleCmd = &cobra.Command{
 	Use:     "bundle",
-	Short:   "Installs Process Runtime Bundle. [NOT IMPLEMENTED]",
+	Short:   "Installs Process Runtime Bundle.",
 	Long:    `Installs Process Runtime Bundle.`,
 	Aliases: aliases("bundle"),
 	Run: func(cmd *cobra.Command, args []string) {
-		common.LogNotImplemented("process-connectors")
+		parm := installprocbun.Parms{
+			Namespace:                     installprocbun.ArgNamespace,
+			SourceDir:                     installprocbun.ArgSourceDir,
+			ValuesDir:                     installprocbun.ArgValuesDir,
+			IngressIP:                     installprocbun.ArgIngressIP,
+			IdentityHost:                  installprocbun.ArgIdentityHost,
+			MQHost:                        installprocbun.ArgMQHost,
+			QueryForAllPodsRunningSeconds: installprocbun.ArgQueryForAllPodsRunningSeconds,
+			TimeoutSeconds:                installprocbun.ArgTimeoutSeconds,
+		}
+		installer, err := installprocbun.NewInstallProcessRuntimeBundle()
+		if err != nil {
+			common.LogError(err.Error())
+			return
+		}
+		err = installer.Install(parm)
+		if err != nil {
+			common.LogError(err.Error())
+			return
+		}
 	},
 }
 
 func init() {
-	//installmy.FillCobraCommand(installMyCmd)
+	installprocbun.FillCobraCommand(installProcessBundleCmd)
 }

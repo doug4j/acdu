@@ -94,6 +94,7 @@ func InstallAndVerifyPodsReady(parms InstallParms, valuesFile string, api corev1
 		//fmt.Sprintf("%vvalues.yaml", valDir)}...
 		args = append(args, []string{"-f", valuesFile}...)
 	}
+	//Command()
 	initialChartDeployStart := time.Now()
 	fullCommand := append([]string{program}, args...)
 	LogWorking(fmt.Sprintf("Installing [%v]...", strings.Join(fullCommand, " ")))
