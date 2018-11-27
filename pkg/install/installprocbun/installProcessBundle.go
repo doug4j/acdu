@@ -2,7 +2,6 @@ package installprocbun
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"time"
 
@@ -10,12 +9,13 @@ import (
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
+//InstallProcessRuntimeBundling installs the runtime bundle for an Activiti Cloud application for development purposes.
 type InstallProcessRuntimeBundling interface {
 	Install(parms Parms) error
 }
 
 //NewInstallProcessRuntimeBundling uses local kubernetes configuration files in $HOME/.kub/config to connect to Kubernetes and passess back a InstallProcessRuntimeBundling.
-func NewInstallProcessRuntimeBundle() (InstallProcessRuntimeBundling, error) {
+func NewInstallProcessRuntimeBundling() (InstallProcessRuntimeBundling, error) {
 	api, err := common.LoadKubernetesAPI()
 	if err != nil {
 		return nil, err
@@ -51,20 +51,7 @@ func (l installProcessRuntimeBundler) Install(parms Parms) error {
 	}
 	common.LogInfo(fmt.Sprintf("Using source directory [%v]", parms.SourceDir))
 
-	tempValuesFile, err := common.ReadAndWriteValuesFile(parms.ValuesDir, parms.IngressIP, common.VerboseLogging)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if !common.VerboseLogging {
-			err = os.Remove(tempValuesFile)
-			if err != nil {
-				common.LogError("Could not remove file Timed out without all pods running")
-			}
-		} else {
-			common.LogInfo(fmt.Sprintf("Temp values file was not deleted as verbose logging is turned on:%v", tempValuesFile))
-		}
-	}()
+	var err error
 
 	err = common.Command("mvn", []string{"package"}, parms.SourceDir, "Compile and package code")
 	if err != nil {
@@ -101,22 +88,11 @@ func (l installProcessRuntimeBundler) Install(parms Parms) error {
 		Namespace:                     parms.Namespace,
 		QueryForAllPodsRunningSeconds: parms.QueryForAllPodsRunningSeconds,
 		TimeoutSeconds:                parms.TimeoutSeconds,
-		//VerboseLogging:                parms.VerboseLogging,
 	}
 	err = common.VerifyPodsReady(verifyParms, l.api)
 	if err != nil {
 		return err
 	}
-	// installParms := toInstallParms(chartName, parms)
-
-	// common.InstallAndVerifyPodsReady(installParms, tempValuesFile, l.api)
-
-	// err = common.Command("helm", []string{"install", fmt.Sprintf("./charts/%v", pom.ArtifactID), fmt.Sprintf("--%v", parms.Namespace)}, parms.SourceDir, "Deploying helm project")
-	// if err != nil {
-	// 	return err
-	// }
-
-	// common.LogNotImplemented("process-bundle")
 	end := time.Now()
 	elapsed := end.Sub(start)
 	common.LogTime(fmt.Sprintf("Total Elapsed time: %v", elapsed.Round(time.Millisecond)))
@@ -125,9 +101,8 @@ func (l installProcessRuntimeBundler) Install(parms Parms) error {
 
 func toInstallParms(chartName string, parms Parms) common.InstallParms {
 	installParms := common.InstallParms{
-		ChartName:  chartName,
-		CustomRepo: false,
-		//HelmRepo:                      parms.HelmRepo,
+		ChartName:                     chartName,
+		CustomRepo:                    false,
 		ValuesDir:                     parms.ValuesDir,
 		Namespace:                     parms.Namespace,
 		TimeoutSeconds:                parms.TimeoutSeconds,

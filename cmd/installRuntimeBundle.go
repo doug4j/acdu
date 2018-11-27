@@ -37,7 +37,7 @@ var installProcessBundleCmd = &cobra.Command{
 			QueryForAllPodsRunningSeconds: installprocbun.ArgQueryForAllPodsRunningSeconds,
 			TimeoutSeconds:                installprocbun.ArgTimeoutSeconds,
 		}
-		installer, err := installprocbun.NewInstallProcessRuntimeBundle()
+		installer, err := installprocbun.NewInstallProcessRuntimeBundling()
 		if err != nil {
 			common.LogError(err.Error())
 			return

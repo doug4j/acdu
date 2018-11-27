@@ -29,12 +29,37 @@ type processBundleGenerator struct {
 type Parms struct {
 	BundleName     string `validate:"min=2,kubeFriendlyName" arg:"required=true,shortname=b,longname=bundlename" help:"Name of the runtime bundle (friendly for kubernetes and jars)."`
 	PackageName    string `validate:"min=2,javaPackageName" arg:"required=true,shortname=p,longname=packagename" help:"Name of java package (friendly for java packages)."`
-	TagName        string `validate:"min=2" arg:"shortname=t,longname=downloadtag,defaultvalue=master" help:"Tag name to pull the zip file github."`
+	TagName        string `validate:"min=2" arg:"shortname=t,longname=downloadtag,defaultvalue=${LatestSupportedTag} use version command for more info" help:"Tag name to pull the zip file github."`
 	DestinationDir string `arg:"shortname=d,longname=destdir,defaultValue=./" help:"Destination directory for writing the runtime bundle template. This directory will be appended with the BundleName. Example: a destdir of '/Users/john/projects' and a bundlename 'my-bundle' will results in the runtime bundle being created in a final directory '/Users/john/projects/my-bundle'"`
 }
 
 //Install help deploys and verifies the full Activiti 7 Example application
 func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
+
+	generator, has := generatorsByTag[parms.TagName]
+	if !has {
+		common.LogWarn(fmt.Sprintf("Unexpected tag name [%v], using Default tag [%v] as generation logic. This may or may not work. It has not been tested by this program.", parms.TagName, LatestSupportedTag))
+		generator, has = generatorsByTag[LatestSupportedTag]
+		if !has {
+			common.LogExit(fmt.Sprintf("Fatal error, default tag %v is not registered in the system", LatestSupportedTag))
+		}
+	}
+	common.LogWorking("TagName '" + parms.TagName + "' requested for download")
+	return generator(parms)
+
+}
+
+type generateRuntimeBundler func(parms Parms) error
+
+const sevenDot0Dot0DotBeta3 = "7.0.0.Beta3"
+
+var generatorsByTag = map[string]generateRuntimeBundler{
+	sevenDot0Dot0DotBeta3: type0GenerateRuntimeBundle,
+}
+
+const LatestSupportedTag = sevenDot0Dot0DotBeta3
+
+func type0GenerateRuntimeBundle(parms Parms) error {
 	if err := common.NewValidator().Struct(parms); err != nil {
 		return err
 	}
@@ -111,7 +136,7 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 	}
 	common.LogOK(fmt.Sprintf("Removed temp zip file %v", tmpRtBunZipFile))
 
-	rtBundleTemplateTransCount := 8
+	rtBundleTemplateTransCount := 9
 
 	newOutputUnzipDir := tmpDir + parms.BundleName + "/"
 	err = os.Rename(outputZipDir, newOutputUnzipDir)
@@ -189,12 +214,23 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 	}
 	common.LogOK(fmt.Sprintf("RT Bundle Transform 7 of %v: Rule change helm service name and repository to bundle name and tag to 'latest'. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
 
+	theFile = newOutputUnzipDir + fmt.Sprintf("charts/%v/Chart.yaml", parms.BundleName)
+	theBytes, err = ioutil.ReadFile(theFile)
+	theStr = string(theBytes)
+	theStr = strings.Replace(theStr, "example-runtime-bundle", parms.BundleName, 1)
+	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
+	err = ioutil.WriteFile(theFile, []byte(theStr), os.ModePerm)
+	if err != nil {
+		return err
+	}
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 8 of %v: Rule change helm name. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+
 	err = os.Rename(newOutputUnzipDir, finalOutDirectory)
 	if err != nil {
 		common.LogError(err.Error())
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 8 of %v: Rule move the folder to the desired destination. Adjusted to %v", rtBundleTemplateTransCount, finalOutDirectory))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 9 of %v: Rule move the folder to the desired destination. Adjusted to %v", rtBundleTemplateTransCount, finalOutDirectory))
 
 	common.LogInfo("Ready to use the Activiti Cloud Runtime Bundle")
 

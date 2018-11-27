@@ -26,7 +26,7 @@ func FillCobraCommand(cmd *cobra.Command) {
 	parmType := reflect.TypeOf(cmdLineParm)
 
 	common.AttachStringArg(cmd, parmType, "BundleName", &ArgBundleName)
-	common.AttachStringArg(cmd, parmType, "TagName", &ArgTagName)
+	common.AttachStringArg(cmd, parmType, "TagName", &ArgTagName, LatestSupportedTag)
 	common.AttachStringArg(cmd, parmType, "PackageName", &ArgPackageName)
 	common.AttachStringArg(cmd, parmType, "DestinationDir", &ArgDestinationDir)
 }

@@ -54,6 +54,15 @@ func LogError(msg string) {
 	log.Printf("⛔ " + msg)
 }
 
+//LogWarn does Println with conditional WARN prefix based on platform
+func LogWarn(msg string) {
+	if runtime.GOOS == "windows" {
+		log.Printf(logPrefixPad("[WARN]") + msg)
+		return
+	}
+	log.Printf("🤔 " + msg)
+}
+
 //LogExit does Println with conditional EXIT prefix based on platform and then ends the process with os.Exit(1)
 func LogExit(msg string) {
 	if runtime.GOOS == "windows" {
@@ -65,7 +74,7 @@ func LogExit(msg string) {
 	os.Exit(1)
 }
 
-//LogLogNotImplementedError does Println with conditional UNFINISHED prefix based on platform
+//LogNotImplemented does Println with conditional UNFINISHED prefix based on platform
 func LogNotImplemented(msg string) {
 	if runtime.GOOS == "windows" {
 		log.Printf(logPrefixPad("[UNFINISHED]") + msg)

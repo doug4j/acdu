@@ -28,7 +28,6 @@ type InstallParms struct {
 	ValuesDir                     string
 	Namespace                     string
 	TimeoutSeconds                int
-	VerboseLogging                bool
 	QueryForAllPodsRunningSeconds int
 }
 
@@ -36,7 +35,6 @@ type InstallParms struct {
 type VerifyParms struct {
 	Namespace                     string
 	TimeoutSeconds                int
-	VerboseLogging                bool
 	QueryForAllPodsRunningSeconds int
 }
 
@@ -44,7 +42,6 @@ type VerifyParms struct {
 type DeleteNamespaceParms struct {
 	Namespace                     string
 	TimeoutSeconds                int
-	VerboseLogging                bool
 	QueryForAllPodsRunningSeconds int
 }
 
@@ -106,7 +103,7 @@ func InstallAndVerifyPodsReady(parms InstallParms, valuesFile string, api corev1
 		LogError(err.Error())
 		return err
 	}
-	if parms.VerboseLogging {
+	if VerboseLogging {
 		LogOK(fmt.Sprintf("Deployed chart [%v]. Output:\n%v", parms.ChartName, fmt.Sprintf("%s", out)))
 	} else {
 		LogOK(fmt.Sprintf("Deployed chart [%v]", parms.ChartName))
@@ -115,7 +112,6 @@ func InstallAndVerifyPodsReady(parms InstallParms, valuesFile string, api corev1
 		Namespace:                     parms.Namespace,
 		QueryForAllPodsRunningSeconds: parms.QueryForAllPodsRunningSeconds,
 		TimeoutSeconds:                parms.TimeoutSeconds,
-		VerboseLogging:                parms.VerboseLogging,
 	}
 	initialChartDeployFinished := time.Now()
 	elapsed := initialChartDeployFinished.Sub(initialChartDeployStart)

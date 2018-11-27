@@ -67,11 +67,15 @@ func processArg(argument *Argument, fieldName, tagName, tagValue string) error {
 	return nil
 }
 
-func AttachStringArg(cmd *cobra.Command, parmType reflect.Type, variableName string, variableValue *string) {
+//AttachStringArg uses reflection to read the provided struct to determine the arguments. otherArgs has the first argument is the defaultDefault value that overrides anything defined in the struct argument tag.
+func AttachStringArg(cmd *cobra.Command, parmType reflect.Type, variableName string, variableValue *string, otherArgs ...string) {
 	arg, rawHelp := parseArg(parmType, variableName)
 	var defaultValue string
 	if arg.HasDefaultValue {
 		defaultValue = arg.DefaultValue
+	}
+	if len(otherArgs) > 0 {
+		defaultValue = otherArgs[0]
 	}
 	cmd.Flags().StringVarP(variableValue, arg.LongName, arg.ShortName, defaultValue, rationalizeHelp(arg, rawHelp))
 	processRequiredArg(cmd, arg)
