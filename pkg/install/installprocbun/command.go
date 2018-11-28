@@ -13,9 +13,6 @@ var ArgNamespace string
 //ArgSourceDir is used to populate command line argments for the SourceDir.
 var ArgSourceDir string
 
-//ArgValuesDir is used to populate command line argments for the ValuesDir.
-var ArgValuesDir string
-
 //ArgMQHost is used to populate command line argments for the MQHost.
 var ArgMQHost string
 
@@ -39,7 +36,6 @@ func FillCobraCommand(cmd *cobra.Command) {
 
 	common.AttachStringArg(cmd, parmType, "Namespace", &ArgNamespace)
 	common.AttachStringArg(cmd, parmType, "SourceDir", &ArgSourceDir)
-	common.AttachStringArg(cmd, parmType, "ValuesDir", &ArgValuesDir)
 	common.AttachStringArg(cmd, parmType, "IdentityHost", &ArgIdentityHost)
 	common.AttachStringArg(cmd, parmType, "IngressIP", &ArgIngressIP)
 	common.AttachStringArg(cmd, parmType, "MQHost", &ArgMQHost)

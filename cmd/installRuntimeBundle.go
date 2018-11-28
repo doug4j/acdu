@@ -30,7 +30,6 @@ var installProcessBundleCmd = &cobra.Command{
 		parm := installprocbun.Parms{
 			Namespace:                     installprocbun.ArgNamespace,
 			SourceDir:                     installprocbun.ArgSourceDir,
-			ValuesDir:                     installprocbun.ArgValuesDir,
 			IngressIP:                     installprocbun.ArgIngressIP,
 			IdentityHost:                  installprocbun.ArgIdentityHost,
 			MQHost:                        installprocbun.ArgMQHost,

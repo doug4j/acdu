@@ -10,9 +10,6 @@ import (
 //ArgNamespace is used to populate command line argments for the Namespace.
 var ArgNamespace string
 
-//ArgValuesDir is used to populate command line argments for the ValuesDir.
-var ArgValuesDir string
-
 //ArgIngressIP is used to populate command line argments for the IngressIP.
 var ArgIngressIP string
 
@@ -28,8 +25,8 @@ var ArgTimeoutSeconds int
 //ArgQueryForAllPodsRunningSeconds is used to populate command line argments for the QueryForAllPodsRunningSeconds.
 var ArgQueryForAllPodsRunningSeconds int
 
-//ArgNonInteractive is used to populate command line argments for the NonInteractive.
-var ArgNonInteractive bool
+//ArgInteractive is used to populate command line argments for the Interactive.
+var ArgInteractive bool
 
 //ArgRemoveNamespace is used to populate command line argments for the RemoveNamespace.
 var ArgRemoveNamespace bool
@@ -43,12 +40,11 @@ func FillCobraCommand(cmd *cobra.Command) {
 	parmType := reflect.TypeOf(cmdLineParm)
 
 	common.AttachStringArg(cmd, parmType, "Namespace", &ArgNamespace)
-	common.AttachStringArg(cmd, parmType, "ValuesDir", &ArgValuesDir)
 	common.AttachStringArg(cmd, parmType, "IngressIP", &ArgIngressIP)
 	common.AttachStringArg(cmd, parmType, "Host", &ArgHost)
 	common.AttachStringArg(cmd, parmType, "HelmRepo", &ArgHelmRepo)
 	common.AttachIntArg(cmd, parmType, "TimeoutSeconds", &ArgTimeoutSeconds)
 	common.AttachIntArg(cmd, parmType, "QueryForAllPodsRunningSeconds", &ArgQueryForAllPodsRunningSeconds)
-	common.AttachBoolArg(cmd, parmType, "NonInteractive", &ArgNonInteractive)
+	common.AttachBoolArg(cmd, parmType, "Interactive", &ArgInteractive)
 	common.AttachBoolArg(cmd, parmType, "RemoveNamespace", &ArgRemoveNamespace)
 }

@@ -4,9 +4,8 @@ import (
 
 	//apiv1 "k8s.io/apimachinery/pkg/apis/core/v1"
 
-	"bufio"
 	"fmt"
-	"os"
+	"strconv"
 	"time"
 
 	common "github.com/doug4j/acdu/pkg/common"
@@ -38,13 +37,12 @@ type infrastructureInstaller struct {
 type Parms struct {
 	//TODO(doug4j@gmail.com): implment validators for parameters
 	Namespace                     string `validate:"min=2" arg:"required=true,shortname=n" help:"Kubernetes namespace to install into."`
-	ValuesDir                     string `validate:"min=1" arg:"required=true,shortname=d" help:"Directory in which the 'values.yaml' files exists."`
 	IngressIP                     string `validate:"min=2" arg:"required=true,shortname=i" help:"Kubernetes ingress IP address. Tip: for a local install, when connected to the internet this can suffixed with '.nip.io' to map external ips to internal ones."`
 	Host                          string `validate:"min=2" arg:"shortname=o,defaultValue=localhost" help:"Host name of the kubernetes api."`
 	TimeoutSeconds                int    `validate:"min=0" arg:"shortname=t,defaultValue=720" help:"Number of seconds to wait until the kubernetes commands give up."`
 	QueryForAllPodsRunningSeconds int    `validate:"min=0" arg:"shortname=q,defaultValue=5" help:"Number of seconds to wait until querying to see if all pods are running."`
 	HelmRepo                      string `arg:"shortname=r" help:"Helm repo to use."`
-	NonInteractive                bool   `arg:"longname=nouser,defaultValue=false" help:"Determines whether user actions are expected and waited on. Note: the default is to be interactive."`
+	Interactive                   bool   `arg:"defaultValue=false" help:"Determines whether user actions are expected and waited on."`
 	RemoveNamespace               bool   `arg:"longname=removenamespace,defaultValue=false" help:"Removes the previous namespace if present."`
 }
 
@@ -68,61 +66,77 @@ func (l infrastructureInstaller) Install(parms Parms) error {
 		}
 	}
 
-	tempValuesFile, err := common.ReadAndWriteValuesFile(parms.ValuesDir, parms.IngressIP, common.VerboseLogging)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if !common.VerboseLogging {
-			err = os.Remove(tempValuesFile)
-			if err != nil {
-				common.LogError("Could not remove file Timed out without all pods running")
-			}
-		} else {
-			common.LogInfo(fmt.Sprintf("Temp values file was not deleted as verbose logging is turned on:%v", tempValuesFile))
-		}
-	}()
+	ingressStart := time.Now()
 
-	if err := l.installIngress(parms, tempValuesFile); err != nil {
+	if err := l.installIngress(parms); err != nil {
 		return err
 	}
 	ingressFinished := time.Now()
-	elapsed := ingressFinished.Sub(start)
+	elapsed := ingressFinished.Sub(ingressStart)
 	common.LogTime(fmt.Sprintf("Install Ingress elapsed time: %v", elapsed.Round(time.Millisecond)))
+	elapsed = ingressFinished.Sub(start)
+	common.LogTime(fmt.Sprintf("Elapsed time thus far: %v", elapsed.Round(time.Millisecond)))
 
-	if err := l.activitiFullExample(parms, tempValuesFile); err != nil {
+	activitiFullExampleStart := time.Now()
+	if err := l.activitiFullExample(parms); err != nil {
 		return err
 	}
 	activitiFullExampleFinished := time.Now()
-	elapsed = activitiFullExampleFinished.Sub(ingressFinished)
+	elapsed = activitiFullExampleFinished.Sub(activitiFullExampleStart)
 	common.LogTime(fmt.Sprintf("Install Activiti Full Example elapsed time: %v", elapsed.Round(time.Millisecond)))
+	elapsed = activitiFullExampleFinished.Sub(start)
+	common.LogTime(fmt.Sprintf("Elapsed time thus far: %v", elapsed.Round(time.Millisecond)))
 
 	if err := showUsefulURLs(parms); err != nil {
 		return err
 	}
 
-	elapsed = activitiFullExampleFinished.Sub(start)
+	end := time.Now()
+	elapsed = end.Sub(start)
 	common.LogTime(fmt.Sprintf("Total Elapsed time: %v", elapsed.Round(time.Millisecond)))
-
 	return nil
 }
 
-func (l infrastructureInstaller) installIngress(parms Parms, tempValuesFile string) error {
+func (l infrastructureInstaller) installIngress(parms Parms) error {
 	chartName := "stable/nginx-ingress"
-	installParms := toInstallParms(chartName, parms)
-	return common.InstallAndVerifyPodsReady(installParms, tempValuesFile, l.api)
+	err := common.Command("helm",
+		[]string{
+			"install", chartName, "--namespace", parms.Namespace, "--timeout", strconv.Itoa(parms.TimeoutSeconds), "--wait",
+		},
+		"", "Deploy project via helm (and verify)")
+	if err != nil {
+		return err
+	}
+	return verifyAllPods(parms, l.api)
 }
 
-func (l infrastructureInstaller) activitiFullExample(parms Parms, tempValuesFile string) error {
+func (l infrastructureInstaller) activitiFullExample(parms Parms) error {
 	chartName := "activiti-cloud-charts/activiti-cloud-full-example"
-	installParms := toInstallParms(chartName, parms)
-	return common.InstallAndVerifyPodsReady(installParms, tempValuesFile, l.api)
+	err := common.Command("helm",
+		[]string{
+			"install", chartName, "--namespace", parms.Namespace, "--timeout", strconv.Itoa(parms.TimeoutSeconds), "--wait",
+			"--set", fmt.Sprintf("global.keycloak.url=http://activiti-keycloak.%v/auth", parms.IngressIP),
+			"--set", fmt.Sprintf("global.gateway.host=activiti-cloud-gateway.%v", parms.IngressIP),
+			"--set", fmt.Sprintf("infrastructure.activiti-keycloak.keycloak.keycloak.ingress.hosts[0]=activiti-keycloak.%v", parms.IngressIP),
+			"--set", fmt.Sprintf("infrastructure.activiti-cloud-gateway.ingress.hostName=activiti-cloud-gateway.%v", parms.IngressIP),
+			"--set", "application.activiti-cloud-connector.enabled=false",
+			"--set", "application.runtime-bundle.enabled=false",
+			"--set", "activiti-cloud-modeling.enabled=true",
+		},
+		"", "Deploy project via helm (and verify)")
+	if err != nil {
+		return err
+	}
+	return verifyAllPods(parms, l.api)
 }
 
-func waitForSpaceBar() {
-	common.LogWaitingForUser("Press the <enter> key to continue")
-	input := bufio.NewScanner(os.Stdin)
-	input.Scan()
+func verifyAllPods(parms Parms, api corev1.CoreV1Interface) error {
+	verifyParms := common.VerifyParms{
+		Namespace:                     parms.Namespace,
+		QueryForAllPodsRunningSeconds: parms.QueryForAllPodsRunningSeconds,
+		TimeoutSeconds:                parms.TimeoutSeconds,
+	}
+	return common.VerifyPodsReady(verifyParms, api)
 }
 
 const identityURLName = "identityURL"
@@ -133,25 +147,25 @@ const defaultIdentityCredentials = "default user/name: admin/admin"
 const defaultModelerCredentials = "default user/name: modeler/password"
 
 func showUsefulURLs(parms Parms) error {
-	if parms.NonInteractive {
-		nonInteractiveAvailableURLMsg(identityURL(parms), identityURLName, defaultIdentityCredentials)
-		nonInteractiveAvailableURLMsg(modelerURL(parms), modelerURLName, defaultModelerCredentials)
-		nonInteractiveAvailableURLMsg(modelingSwaggerURL(parms), modelingSwaggerURLName, "")
-	} else {
+	if parms.Interactive {
 		if err := launchIdentity(parms); err != nil {
 			return err
 		}
-		waitForSpaceBar()
+		common.WaitForSpaceBar()
 
 		if err := launchModeler(parms); err != nil {
 			return err
 		}
-		waitForSpaceBar()
+		common.WaitForSpaceBar()
 
 		if err := launchModelingSwagger(parms); err != nil {
 			return err
 		}
-		waitForSpaceBar()
+		common.WaitForSpaceBar()
+	} else {
+		common.NonInteractiveAvailableURLMsg(identityURL(parms), identityURLName, defaultIdentityCredentials)
+		common.NonInteractiveAvailableURLMsg(modelerURL(parms), modelerURLName, defaultModelerCredentials)
+		common.NonInteractiveAvailableURLMsg(modelingSwaggerURL(parms), modelingSwaggerURLName, "")
 	}
 	return nil
 }
@@ -186,17 +200,4 @@ func launchModeler(parms Parms) error {
 
 func launchModelingSwagger(parms Parms) error {
 	return common.LoadURLInBrowser(modelingSwaggerURL(parms), modelingSwaggerURLName, "")
-}
-
-func toInstallParms(chartName string, parms Parms) common.InstallParms {
-	installParms := common.InstallParms{
-		ChartName:                     chartName,
-		CustomRepo:                    false,
-		HelmRepo:                      parms.HelmRepo,
-		ValuesDir:                     parms.ValuesDir,
-		Namespace:                     parms.Namespace,
-		TimeoutSeconds:                parms.TimeoutSeconds,
-		QueryForAllPodsRunningSeconds: parms.QueryForAllPodsRunningSeconds,
-	}
-	return installParms
 }

@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
-	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -68,69 +65,10 @@ func LoadKubernetesAPI() (corev1.CoreV1Interface, error) {
 	return api, nil
 }
 
-//InstallAndVerifyPodsReady installs a helm chart and verifies that all of the pods in the namespace are running
-func InstallAndVerifyPodsReady(parms InstallParms, valuesFile string, api corev1.CoreV1Interface) error {
-	program := "helm"
-	chartDir := EnsureFowardSlashAtStringEnd(parms.ValuesDir)
-	args := []string{"install", parms.ChartName, "--namespace", parms.Namespace, "--timeout",
-		strconv.Itoa(parms.TimeoutSeconds), "--wait",
-		//This is to attempt the CrashLoopRestart cycle as described https://github.com/pires/kubernetes-elasticsearch-cluster/issues/175
-		//"--set", fmt.Sprintf("livenessProbe.initialDelaySeconds=%v", strconv.Itoa(parms.TimeoutSeconds-30)),
-		//"--set", fmt.Sprintf("readinessProbe.initialDelaySeconds=%v", strconv.Itoa(parms.TimeoutSeconds-40)),
-
-		//KEEPING THIS EXAMPLE AROUND AS THIS IS LIKELY AN ALTERNATIVE TO WRITE A TEMP VALUES FILE
-		//"--set", fmt.Sprintf("global.keycloak.url=http://activiti-keycloak.%v/auth", parms.IngressIP),
-		//"--set", fmt.Sprintf("global.gateway.host=activiti-cloud-gateway.%v", parms.IngressIP),
-		//"--set", fmt.Sprintf("infrastructure.activiti-cloud-gateway.ingress.hostName=activiti-cloud-gateway.%v", parms.IngressIP),
-		//"--set", fmt.Sprintf("infrastructure.activiti-keycloak.keycloak.keycloak.ingress.hosts[0]=activiti-keycloak.%v", parms.IngressIP),
-	}
-	if parms.CustomRepo {
-		args = append(args, []string{"--repo", parms.HelmRepo}...)
-	} //else USE DEFAULT REPO FOR HELM
-	if valuesFile != "" {
-		//fmt.Sprintf("%vvalues.yaml", valDir)}...
-		args = append(args, []string{"-f", valuesFile}...)
-	}
-	//Command()
-	initialChartDeployStart := time.Now()
-	fullCommand := append([]string{program}, args...)
-	LogWorking(fmt.Sprintf("Installing [%v]...", strings.Join(fullCommand, " ")))
-	cmd := exec.Command(program, args...)
-	cmd.Dir = chartDir
-	out, err := exec.Command(program, args...).CombinedOutput()
-	if err != nil {
-		err = fmt.Errorf("Cannot deploy chart [%v]. Output:\n%verror:[%v]", parms.ChartName, fmt.Sprintf("%s", out), err)
-		LogError(err.Error())
-		return err
-	}
-	if VerboseLogging {
-		LogOK(fmt.Sprintf("Deployed chart [%v]. Output:\n%v", parms.ChartName, fmt.Sprintf("%s", out)))
-	} else {
-		LogOK(fmt.Sprintf("Deployed chart [%v]", parms.ChartName))
-	}
-	verifyParms := VerifyParms{
-		Namespace:                     parms.Namespace,
-		QueryForAllPodsRunningSeconds: parms.QueryForAllPodsRunningSeconds,
-		TimeoutSeconds:                parms.TimeoutSeconds,
-	}
-	initialChartDeployFinished := time.Now()
-	elapsed := initialChartDeployFinished.Sub(initialChartDeployStart)
-	common.LogTime(fmt.Sprintf("Helm deployed elapsed time: %v (some charts required further verification)", elapsed.Round(time.Millisecond)))
-	return VerifyPodsReady(verifyParms, api)
-}
-
 //VerifyPodsReady looks at all of the pods in a namespace and confirms all services are running in the namespace running returning <nil> if successful.
 //If the are not, the status is polled returning <nil> when the services are up-and-running or until the timeout period at which time an error is throw.
 func VerifyPodsReady(parms VerifyParms, api corev1.CoreV1Interface) error {
-	// getOptions := v1.GetOptions{IncludeUninitialized: false}
-	// namespace, err := api.Namespaces().Get(parms.Namespace, getOptions)
-	// if err != nil {
-	// 	LogError("oops")
-	// 	return err
-	// }
-	// LogOK(fmt.Sprintf("Found namespace:%v", namespace))
-
-	//TODO: Change polling to watch call
+	//TODO: Change from polling to kubernetes watch call to be that much more efficient
 	options := v1.ListOptions{IncludeUninitialized: true}
 	podList, err := api.Pods(parms.Namespace).List(options)
 	if err != nil {
@@ -221,30 +159,6 @@ func DeleteAndVerifyNamespace(parms DeleteNamespaceParms, api corev1.CoreV1Inter
 	}
 }
 
-//ReadAndWriteValuesFile reads ".values.yaml" from the provided directory, replaces values with REPLACEME with the ingressIP.
-func ReadAndWriteValuesFile(valuesDir string, ingressIP string, verboseLogging bool) (string, error) {
-	values, err := readValuesFile(valuesDir)
-	if err != nil {
-		err = fmt.Errorf("Could not read values file: " + err.Error())
-		LogError(err.Error())
-		return "", err
-	}
-	values = strings.Replace(values, "REPLACEME", ingressIP, -1)
-	tempValuesFile := EnsureFowardSlashAtStringEnd(valuesDir) + "values-temp.yaml"
-	//TODO (doug4j@gmail.com): Ensure the this is the correct write mode "os.ModePerm"
-	err = ioutil.WriteFile(tempValuesFile, []byte(values), os.ModePerm)
-	if err != nil {
-		err = fmt.Errorf("Could not read values file: " + err.Error())
-		LogError(err.Error())
-		return "", err
-	}
-	if verboseLogging {
-		LogOK(fmt.Sprintf("Replace values file [%v].", values))
-	}
-	LogOK(fmt.Sprintf("Wrote new temp values file: [%v]", tempValuesFile))
-	return tempValuesFile, nil
-}
-
 func podNames(podList *apiv1.PodList) string {
 	answer := []string{}
 	for _, pod := range podList.Items {
@@ -278,7 +192,6 @@ func allPodsReady(podList apiv1.PodList) bool {
 			}
 		}
 	}
-	//log.Printf("ℹ️ statusTotalMap:%v, statusReadyCountMap:%v", statusTotalMap, statusReadyCountMap)
 	for podName, statusReadyCount := range statusReadyCountMap {
 		statusTotalCount := statusTotalMap[podName]
 		if statusReadyCount != statusTotalCount {

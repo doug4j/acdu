@@ -24,7 +24,7 @@ import (
 
 var installInfraCmd = &cobra.Command{
 	Use:   "infrastructure",
-	Short: "Installs the base microservices for an Activiti Cloud dev environment.",
+	Short: "Installs the base microservices for an Activiti Cloud dev environment (including modeling).",
 	Long: `Installs the base microservices for an Activiti Cloud dev environment 
 for develompent purposes in a Kubernetes namespace (minus your custom code).`,
 	Aliases: aliases("infrastructure"),
@@ -36,8 +36,7 @@ for develompent purposes in a Kubernetes namespace (minus your custom code).`,
 			IngressIP:                     installinfra.ArgIngressIP,
 			QueryForAllPodsRunningSeconds: installinfra.ArgQueryForAllPodsRunningSeconds,
 			TimeoutSeconds:                installinfra.ArgTimeoutSeconds,
-			ValuesDir:                     installinfra.ArgValuesDir,
-			NonInteractive:                installinfra.ArgNonInteractive,
+			Interactive:                   installinfra.ArgInteractive,
 			RemoveNamespace:               installinfra.ArgRemoveNamespace,
 		}
 		installer, err := installinfra.NewInfrastructureInstalling()

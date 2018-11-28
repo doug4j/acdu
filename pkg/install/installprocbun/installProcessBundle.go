@@ -34,7 +34,6 @@ type installProcessRuntimeBundler struct {
 type Parms struct {
 	Namespace                     string `validate:"min=2" arg:"required=true,shortname=n" help:"Kubernetes namespace to install into."`
 	SourceDir                     string `validate:"min=2" arg:"shortname=s,defaultValue=./" help:"The directory where the source code exists."`
-	ValuesDir                     string `validate:"min=2" arg:"required=true,shortname=d" help:"Directory in which the 'values.yaml' files exists."`
 	MQHost                        string `validate:"min=2" arg:"required=true,shortname=m,longname=mqhost" help:"Hostname of the message and queuing connection (RabbitMQ)."`
 	IdentityHost                  string `validate:"min=2" arg:"required=true,shortname=k" help:"Hostname of the identity service connection (Keycloak)."`
 	IngressIP                     string `validate:"min=2" arg:"required=true,shortname=i" help:"Kubernetes ingress IP address. Tip: for a local install, when connected to the internet this can suffixed with '.nip.io' to map external ips to internal ones."`
@@ -96,17 +95,7 @@ func (l installProcessRuntimeBundler) Install(parms Parms) error {
 	end := time.Now()
 	elapsed := end.Sub(start)
 	common.LogTime(fmt.Sprintf("Total Elapsed time: %v", elapsed.Round(time.Millisecond)))
-	return nil
-}
 
-func toInstallParms(chartName string, parms Parms) common.InstallParms {
-	installParms := common.InstallParms{
-		ChartName:                     chartName,
-		CustomRepo:                    false,
-		ValuesDir:                     parms.ValuesDir,
-		Namespace:                     parms.Namespace,
-		TimeoutSeconds:                parms.TimeoutSeconds,
-		QueryForAllPodsRunningSeconds: parms.QueryForAllPodsRunningSeconds,
-	}
-	return installParms
+	//TODO(doug4j@gmail.com): Display use urls like activiti-cloud-gateway.192.168.7.185.nip.io/test-me-1a/swagger-ui.html
+	return nil
 }

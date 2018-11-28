@@ -128,7 +128,7 @@ func parseArg(parmType reflect.Type, variableName string) (arg Argument, rawHelp
 	}
 	arg, err = ParseArgFromField(field)
 	if err != nil {
-		LogExit(fmt.Sprintf("Fatal mis-configuration, could not get argements from field [%v]", field))
+		LogExit(fmt.Sprintf("Fatal mis-configuration, could not get arguments from field [%v]", field))
 	}
 	rawHelp = field.Tag.Get("help")
 	return arg, rawHelp
