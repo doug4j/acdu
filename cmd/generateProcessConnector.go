@@ -16,20 +16,34 @@ package cmd
 
 import (
 	"github.com/doug4j/acdu/pkg/common"
+	"github.com/doug4j/acdu/pkg/generate/genproccon"
 
 	"github.com/spf13/cobra"
 )
 
 var genProcessConnectorCmd = &cobra.Command{
 	Use:     "connector",
-	Short:   "Creates Process Connector. [NOT IMPLEMENTED]",
+	Short:   "Creates Process Connector.",
 	Long:    `Creates Process Connector.`,
 	Aliases: aliases("connector"),
 	Run: func(cmd *cobra.Command, args []string) {
-		common.LogNotImplemented("create-process-connector")
+		parm := genproccon.Parms{
+			BundleName:         genproccon.ArgBundleName,
+			PackageName:        genproccon.ArgPackageName,
+			ChannelName:        genproccon.ArgChannelName,
+			ImplementationName: genproccon.ArgImplementationName,
+			TagName:            genproccon.ArgTagName,
+			DestinationDir:     genproccon.ArgDestinationDir,
+		}
+		generating := genproccon.NewProcessConnectorGenerating()
+		err := generating.GenerateConnector(parm)
+		if err != nil {
+			common.LogError(err.Error())
+			return
+		}
 	},
 }
 
 func init() {
-	//genmddoc.FillCobraCommand(genMdDocCmd)
+	genproccon.FillCobraCommand(genProcessConnectorCmd)
 }

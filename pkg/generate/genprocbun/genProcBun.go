@@ -35,6 +35,9 @@ type Parms struct {
 
 //Install help deploys and verifies the full Activiti 7 Example application
 func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
+	if err := common.NewValidator().Struct(parms); err != nil {
+		return err
+	}
 
 	generator, has := generatorsByTag[parms.TagName]
 	if !has {
@@ -45,8 +48,11 @@ func (l processBundleGenerator) GenerateRuntimeBundle(parms Parms) error {
 		}
 	}
 	common.LogWorking("TagName '" + parms.TagName + "' requested for download")
-	return generator(parms)
-
+	if err := generator(parms); err != nil {
+		return err
+	}
+	common.LogInfo("Ready to use the Activiti Cloud Runtime Bundle")
+	return nil
 }
 
 type generateRuntimeBundler func(parms Parms) error
@@ -60,9 +66,6 @@ var generatorsByTag = map[string]generateRuntimeBundler{
 const LatestSupportedTag = sevenDot0Dot0DotBeta3
 
 func type0GenerateRuntimeBundle(parms Parms) error {
-	if err := common.NewValidator().Struct(parms); err != nil {
-		return err
-	}
 	var err error
 
 	destDir := common.EnsureFowardSlashAtStringEnd(parms.DestinationDir)
@@ -113,30 +116,30 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 		}
 	}()
 
-	tmpRtBunZipFile := fmt.Sprintf("%vTmpRtBun.zip", tmpDir)
+	tmpZipFile := fmt.Sprintf("%vTmpRtBun.zip", tmpDir)
 
-	rtBundleURL := fmt.Sprintf("https://github.com/Activiti/example-runtime-bundle/archive/%v.zip", parms.TagName)
+	downloadURL := fmt.Sprintf("https://github.com/Activiti/example-runtime-bundle/archive/%v.zip", parms.TagName)
 
-	err = common.DownloadZipFromURL(rtBundleURL, tmpRtBunZipFile)
+	err = common.DownloadZipFromURL(downloadURL, tmpZipFile)
 	if err != nil {
 		common.LogError(err.Error())
 		return err
 	}
 
-	outputZipDir, err := common.UnzipFromFileToDir(tmpRtBunZipFile, tmpDir)
+	outputZipDir, err := common.UnzipFromFileToDir(tmpZipFile, tmpDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 	common.LogOK(fmt.Sprintf("Unzipped runtime bundle template to %v%v", tmpDir, outputZipDir))
 
-	err = os.Remove(tmpRtBunZipFile)
+	err = os.Remove(tmpZipFile)
 	if err != nil {
 		common.LogError(err.Error())
 		return err
 	}
-	common.LogOK(fmt.Sprintf("Removed temp zip file %v", tmpRtBunZipFile))
+	common.LogOK(fmt.Sprintf("Removed temp zip file %v", tmpZipFile))
 
-	rtBundleTemplateTransCount := 9
+	totalTransformsCount := 9
 
 	newOutputUnzipDir := tmpDir + parms.BundleName + "/"
 	err = os.Rename(outputZipDir, newOutputUnzipDir)
@@ -144,7 +147,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 		common.LogError(err.Error())
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 1 of %v: Rule rename template directory. Renamed from %v %v", rtBundleTemplateTransCount, outputZipDir, newOutputUnzipDir))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 1 of %v: Rule rename template directory. Renamed from %v %v", totalTransformsCount, outputZipDir, newOutputUnzipDir))
 
 	theFile := newOutputUnzipDir + "pom.xml"
 	theBytes, err := ioutil.ReadFile(theFile)
@@ -156,7 +159,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 2 of %v: Rule adjust group and artifact id in pom.xml. Adjusted with %v and %v with %v bytes at %v", rtBundleTemplateTransCount, parms.PackageName, parms.BundleName, len(theStr), theFile))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 2 of %v: Rule adjust group and artifact id in pom.xml. Adjusted with %v and %v with %v bytes at %v", totalTransformsCount, parms.PackageName, parms.BundleName, len(theStr), theFile))
 
 	theFile = newOutputUnzipDir + "skaffold.yaml"
 	theBytes, err = ioutil.ReadFile(theFile)
@@ -168,7 +171,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 3 of %v: Rule 'adjust 4 uses in skaffold.yaml. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 3 of %v: Rule 'adjust 4 uses in skaffold.yaml. Adjusted to %v with %v bytes at %v", totalTransformsCount, parms.BundleName, len(theStr), theFile))
 
 	theFile = newOutputUnzipDir + "Jenkinsfile"
 	theBytes, err = ioutil.ReadFile(theFile)
@@ -179,7 +182,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 4 of %v: Rule adjust 3 uses in Jenkinsfile. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 4 of %v: Rule adjust 3 uses in Jenkinsfile. Adjusted to %v with %v bytes at %v", totalTransformsCount, parms.BundleName, len(theStr), theFile))
 
 	renameFrom := newOutputUnzipDir + "charts/example-runtime-bundle"
 	renameTo := newOutputUnzipDir + "charts/" + parms.BundleName
@@ -188,7 +191,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 		common.LogError(err.Error())
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 5 of %v: Rule rename the charts folder. Adjusted to %v", rtBundleTemplateTransCount, renameTo))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 5 of %v: Rule rename the charts folder. Adjusted to %v", totalTransformsCount, renameTo))
 
 	theFile = newOutputUnzipDir + "src/main/resources/application.properties"
 	theBytes, err = ioutil.ReadFile(theFile)
@@ -199,7 +202,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 6 of %v: Rule change the spring.application.name. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 6 of %v: Rule change the spring.application.name. Adjusted to %v with %v bytes at %v", totalTransformsCount, parms.BundleName, len(theStr), theFile))
 
 	theFile = newOutputUnzipDir + fmt.Sprintf("charts/%v/values.yaml", parms.BundleName)
 	theBytes, err = ioutil.ReadFile(theFile)
@@ -212,7 +215,7 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 7 of %v: Rule change helm service name and repository to bundle name and tag to 'latest'. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 7 of %v: Rule change helm service name and repository to bundle name and tag to 'latest'. Adjusted to %v with %v bytes at %v", totalTransformsCount, parms.BundleName, len(theStr), theFile))
 
 	theFile = newOutputUnzipDir + fmt.Sprintf("charts/%v/Chart.yaml", parms.BundleName)
 	theBytes, err = ioutil.ReadFile(theFile)
@@ -223,16 +226,13 @@ func type0GenerateRuntimeBundle(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 8 of %v: Rule change helm name. Adjusted to %v with %v bytes at %v", rtBundleTemplateTransCount, parms.BundleName, len(theStr), theFile))
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 8 of %v: Rule change helm name. Adjusted to %v with %v bytes at %v", totalTransformsCount, parms.BundleName, len(theStr), theFile))
 
 	err = os.Rename(newOutputUnzipDir, finalOutDirectory)
 	if err != nil {
 		common.LogError(err.Error())
 		return err
 	}
-	common.LogOK(fmt.Sprintf("RT Bundle Transform 9 of %v: Rule move the folder to the desired destination. Adjusted to %v", rtBundleTemplateTransCount, finalOutDirectory))
-
-	common.LogInfo("Ready to use the Activiti Cloud Runtime Bundle")
-
+	common.LogOK(fmt.Sprintf("RT Bundle Transform 9 of %v: Rule move the folder to the desired destination. Adjusted to %v", totalTransformsCount, finalOutDirectory))
 	return nil
 }

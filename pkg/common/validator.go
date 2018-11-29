@@ -23,6 +23,10 @@ func NewValidator() *validator.Validate {
 	if err != nil {
 		LogExit("Cannot create validator:" + err.Error())
 	}
+	err = answer.RegisterValidation("startsWithLowerCaseAsciiAlpha", startsWithLowerCaseASCIIAlpha)
+	if err != nil {
+		LogExit("Cannot create validator:" + err.Error())
+	}
 	return answer
 }
 
@@ -86,6 +90,17 @@ func startsWithUpperCaseASCIIAlpha(fl validator.FieldLevel) bool {
 		return false
 	}
 	if !unicode.IsUpper(firstRun) {
+		return false
+	}
+	return true
+}
+func startsWithLowerCaseASCIIAlpha(fl validator.FieldLevel) bool {
+	valueStr := fmt.Sprintf("%v", fl.Field())
+	firstRun := []rune(valueStr[0:1])[0]
+	if !unicode.IsLetter(firstRun) {
+		return false
+	}
+	if !unicode.IsLower(firstRun) {
 		return false
 	}
 	return true
