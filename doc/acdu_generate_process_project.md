@@ -1,26 +1,26 @@
-## acdu generate process connector
+## acdu generate process project
 
-Creates Process Connector.
+Creates or updates Process Runtime Bundle and Connector. [NOT IMPLEMENTED]
 
 ### Synopsis
 
-Creates Process Connector.
+Creates or updates Process Runtime Bundle and Connector.
 
 ```
-acdu generate process connector [flags]
+acdu generate process project [flags]
 ```
 
 ### Options
 
 ```
-  -b, --bundle string           MANDATORY: Name of the runtime bundle (friendly for kubernetes and jars).
+  -b, --bundlename string       MANDATORY: Name of the runtime bundle (friendly for kubernetes and jars).
   -c, --channel string          MANDATORY: Name of implementation (starting lower case alpha and all alphanum).
   -d, --destdir string          optional: Destination directory for writing the runtime bundle template. This directory will be appended with the BundleName. Example: a destdir of '/Users/john/projects' and a bundlename 'my-bundle' will results in the runtime bundle being created in a final directory '/Users/john/projects/my-bundle' (default "./")
   -t, --downloadtag string      optional: Tag name to pull the zip file github. (default "7.0.0.Beta3")
-  -h, --help                    help for connector
+  -h, --help                    help for project
   -i, --implementation string   MANDATORY: Name of implementation (starting lower case alpha and all alphanum).
-  -p, --package string          MANDATORY: Name of java package (friendly for java packages).
-  -a, --projectname string      MANDATORY: The default Project to use for the process connector.
+  -p, --packagename string      MANDATORY: Name of java package (friendly for java packages).
+  -a, --projectname string      MANDATORY: The default Project to use for the process bundle.
 ```
 
 ### Options inherited from parent commands
