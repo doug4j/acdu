@@ -31,6 +31,7 @@ var genProcessConnectorCmd = &cobra.Command{
 			BundleName:         genproccon.ArgBundleName,
 			PackageName:        genproccon.ArgPackageName,
 			ChannelName:        genproccon.ArgChannelName,
+			ProjectName:        genproccon.ArgProjectName,
 			ImplementationName: genproccon.ArgImplementationName,
 			TagName:            genproccon.ArgTagName,
 			DestinationDir:     genproccon.ArgDestinationDir,

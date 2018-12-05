@@ -16,27 +16,27 @@ package cmd
 
 import (
 	"github.com/doug4j/acdu/pkg/common"
-	"github.com/doug4j/acdu/pkg/install/installprocbun"
+	"github.com/doug4j/acdu/pkg/install/installquickstart"
 
 	"github.com/spf13/cobra"
 )
 
-var installProcessBundleCmd = &cobra.Command{
-	Use:     "bundle",
-	Short:   "Installs Process Runtime Bundle.",
-	Long:    `Installs Process Runtime Bundle.`,
+var installQuickStartCmd = &cobra.Command{
+	Use:     "quickstart",
+	Short:   "Installs a Process Runtime Bundle or Process Connector Quick Start.",
+	Long:    `Installs a Process Runtime Bundle or Process Connector Quick Start.`,
 	Aliases: aliases("bundle"),
 	Run: func(cmd *cobra.Command, args []string) {
-		parm := installprocbun.Parms{
-			Namespace:                     installprocbun.ArgNamespace,
-			SourceDir:                     installprocbun.ArgSourceDir,
-			IngressIP:                     installprocbun.ArgIngressIP,
-			IdentityHost:                  installprocbun.ArgIdentityHost,
-			MQHost:                        installprocbun.ArgMQHost,
-			QueryForAllPodsRunningSeconds: installprocbun.ArgQueryForAllPodsRunningSeconds,
-			TimeoutSeconds:                installprocbun.ArgTimeoutSeconds,
+		parm := installquickstart.Parms{
+			Namespace:                     installquickstart.ArgNamespace,
+			SourceDir:                     installquickstart.ArgSourceDir,
+			IngressIP:                     installquickstart.ArgIngressIP,
+			IdentityHost:                  installquickstart.ArgIdentityHost,
+			MQHost:                        installquickstart.ArgMQHost,
+			QueryForAllPodsRunningSeconds: installquickstart.ArgQueryForAllPodsRunningSeconds,
+			TimeoutSeconds:                installquickstart.ArgTimeoutSeconds,
 		}
-		installer, err := installprocbun.NewInstallProcessRuntimeBundling()
+		installer, err := installquickstart.NewInstallQuickStarting()
 		if err != nil {
 			common.LogError(err.Error())
 			return
@@ -50,5 +50,5 @@ var installProcessBundleCmd = &cobra.Command{
 }
 
 func init() {
-	installprocbun.FillCobraCommand(installProcessBundleCmd)
+	installquickstart.FillCobraCommand(installQuickStartCmd)
 }

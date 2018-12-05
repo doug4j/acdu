@@ -29,9 +29,9 @@ var installProcessCmd = &cobra.Command{
 }
 
 func init() {
-	installProcessCmd.AddCommand(installProcessConnectorCmd)
-	installProcessCmd.AddCommand(installProcessBundleCmd)
-	installProcessCmd.AddCommand(installProcessProjectCmd)
+	//installProcessCmd.AddCommand(installProcessConnectorCmd)
+	installProcessCmd.AddCommand(installQuickStartCmd)
+	//installProcessCmd.AddCommand(installProcessProjectCmd)
 
 	//installmy.FillCobraCommand(installMyCmd)
 }

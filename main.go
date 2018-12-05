@@ -14,7 +14,9 @@
 
 package main
 
-import "github.com/doug4j/acdu/cmd"
+import (
+	"github.com/doug4j/acdu/cmd"
+)
 
 func main() {
 	cmd.Execute()

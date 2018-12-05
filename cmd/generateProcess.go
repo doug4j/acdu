@@ -44,5 +44,5 @@ var genProcessCmd = &cobra.Command{
 func init() {
 	genProcessCmd.AddCommand(genProcessBundleCmd)
 	genProcessCmd.AddCommand(genProcessConnectorCmd)
-	genProcessCmd.AddCommand(genProcessConnectorDeployConfigCmd)
+	genProcessCmd.AddCommand(genProcessProjectCmd)
 }

@@ -64,7 +64,7 @@ func init() {
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.acdu.yaml)")
 
-	rootCmd.PersistentFlags().BoolVarP(&common.VerboseLogging, "verbose", "v", false, "optional verbosity setting (default:'false'), if true temporary side effects remain persisted for debugging [NOT IMPLEMENTED]")
+	rootCmd.PersistentFlags().BoolVarP(&common.VerboseLogging, "verbose", "v", false, "optional verbosity setting (default:'false'), if true temporary side effects (for instance temp directories/files are not cleaned up) for debugging")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

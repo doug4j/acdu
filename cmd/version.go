@@ -27,7 +27,12 @@ var versionCmd = &cobra.Command{
 	Short: "Shows the version and other variables. [NOT IMPLEMENTED]",
 	Long:  `Shows the version and other variables. [NOT IMPLEMENTED]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		common.LogInfo(fmt.Sprintf("Latest Supported Tag and Default Process Runtime Bundle Download Version '%v'", genprocbun.LatestSupportedTag))
+		common.LogInfo(fmt.Sprintf(`
+Runtime Bundle
+- Latest Supported Tag '%v' 
+- Downloader:          '%v'
+- Implementations:     '%v'
+`, genprocbun.LatestSupportedTag, genprocbun.DefaultDownloader, genprocbun.ImplementationsString()))
 		common.LogNotImplemented("version")
 	},
 }

@@ -31,7 +31,9 @@ var genProcessBundleCmd = &cobra.Command{
 			BundleName:     genprocbun.ArgBundleName,
 			PackageName:    genprocbun.ArgPackageName,
 			TagName:        genprocbun.ArgTagName,
+			ProjectName:    genprocbun.ArgProjectName,
 			DestinationDir: genprocbun.ArgDestinationDir,
+			Downloader:     genprocbun.ArgDownloader,
 		}
 		generating := genprocbun.NewProcessBundleGenerating()
 		err := generating.GenerateRuntimeBundle(parm)

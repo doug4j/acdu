@@ -1,4 +1,4 @@
-package installprocbun
+package installquickstart
 
 import (
 	"reflect"
