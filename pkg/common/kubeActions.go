@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/doug4j/activiti7-cloud-hello-world/go/pkg/common"
 	homedir "github.com/mitchellh/go-homedir"
 	apiv1 "k8s.io/api/core/v1" //apiv1 "k8s.io/apimachinery/pkg/apis/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -141,7 +140,7 @@ func DeleteAndVerifyNamespace(parms DeleteNamespaceParms, api corev1.CoreV1Inter
 				LogOK(fmt.Sprintf("Namespace %v verified deleted", parms.Namespace))
 				end := time.Now()
 				elapsed := end.Sub(start)
-				common.LogTime(fmt.Sprintf("Total Elapsed time: %v", elapsed.Round(time.Millisecond)))
+				LogTime(fmt.Sprintf("Total Elapsed time: %v", elapsed.Round(time.Millisecond)))
 				return nil
 			}
 			return err
