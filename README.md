@@ -142,7 +142,7 @@ http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling-backen
 
 Notice the Helm deployment prefix for the Activiti cloud infrastructure ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in the pattern ```${activitiInfraDeployName}-activiti-cloud-audit-...``` 
 
-Per the above, log into the modeling app, ensuring it is up-and-running via ```http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling``` or ```http://activiti-cloud-gateway.${ipAddress}.nip.io/activiti-cloud-modeling```
+Per the output above, login to the modeling app, ensuring it is up-and-running via ```http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling``` or ```http://activiti-cloud-gateway.${ipAddress}.nip.io/activiti-cloud-modeling```
 
 ## Generate Runtime Bundle Code
 
@@ -205,20 +205,23 @@ acdu generate process connector -b my-con-1 -p com.example -a project1 -c myChan
 ## Create simple Hello World Process and Export to Process Runtime Bundle
 
 In the modeling app:
-1. Create an Application (call it 'TestApp'--though the name isn't important)
+1. Create an Application (call it 'TestApp')
 2. Click on the newly created app
-3. Create a process in the App (call it 'TestProcess'--though the name isn't important)
-4. Create an Activiti off of the start task (Call it 'Automation Task')
-5. With the 'Automation Task' highlighted, click the gears and choose 'Service Task'
+3. Create a process in the App (call it 'TestProcess')
+4. In the newly created process, create an Activity after the Start Event (call it 'Automation Task')
+5. With the 'Automation Task' highlighted, click the gears icon and choose 'Service Task'
 6. In the properties area under Implementation type 'MyFirstConn' (note: this is the same name used in the '-i' or implementation flag in the creation of the cloud connector above)
-7. Close the process with an end task.
+7. Close the process with an End Event.
 8. Save the process
 9. Export the process as a file.
 10. Move the exported file to your process runtime bundle as in ```${projectDir}/my-rb-1/src/main/resources/processes/TestProcess.bpmn20.xml```
+11. Near the top after 'Dashboard' click 'TestApp'
+12. On the far right near the version click the download symbol.
+13. Move the saved app zip file to ```${projectDir}```. (This is simply saving the app for when you shutdown the Kubernetes cluster. Currently, the Modeling app doesn't use a persistent connection.)  
 
 ## Complile, Package, and Deploy Runtime Bundle
 
-Look up the rabbitmq instance from navigating in the Kubernetes Dashboard to the famous-sasquatch-rabbitmq
+Look up the rabbitmq instance from navigating in the Kubernetes Dashboard to the **famous-sasquatch**-rabbitmq
 
 From ```${projectDir}```/my-rb-1 run
 ```
