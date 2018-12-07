@@ -3,11 +3,11 @@
 See [Command Line Doc](./doc/acdu.md) for more details.
 
 ## Pre-reqs
-* (Maven)[https://maven.apache.org/download.cgi] Installed
-* (Java)[https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html] 8 Installed
-* (Docker for Desktop)[https://www.docker.com/products/docker-desktop] with Kubernetes enabled and >=10 gigs of ram and >=4 cores
-* (Helm)[https://docs.helm.sh/using_helm/#installing-helm] installed
-* (Postman)[https://www.getpostman.com/apps] installed
+* [Maven](https://maven.apache.org/download.cgi) Installed
+* [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 8 Installed
+* [Docker for Desktop](https://www.docker.com/products/docker-desktop) with Kubernetes enabled and >=10 gigs of ram and >=4 cores
+* [Helm](https://docs.helm.sh/using_helm/#installing-helm) installed
+* [Postman](https://www.getpostman.com/apps) installed
 
 TODO(@doug4j@gmail.com): Verison and Package acdu
 
@@ -19,7 +19,7 @@ Import [this Activiti 7 Postman Collection](postman/Activiti-v7-REST-API.postman
 
 Import [this Activiti 7 Postman Enviornment](postman/activiti-local.postman_environment.json) environment into Postman.
 
-[ ] Update pull request https://github.com/Activiti/activiti-cloud-examples/pull/95 with the latest from above.
+- [ ] Update pull request https://github.com/Activiti/activiti-cloud-examples/pull/95 with the latest from above.
 
 ### Create a local project directory
 
@@ -140,7 +140,7 @@ http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling-backen
 2018/12/05 19:41:29 ⏱ Total Elapsed time: 8m0.487s
 ```
 
-Important Notice the Helm deployment prefix for the Activiti cloud infrastructure as in ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in ```${activitiInfraDeployName}```-activiti-cloud-audit-5d44f5c69c-j79ff 
+Notice the Helm deployment prefix for the Activiti cloud infrastructure as in ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in ```${activitiInfraDeployName}```-activiti-cloud-audit-5d44f5c69c-j79ff 
 
 Per the above, log into the modeling app, ensuring it is up-and-running.
 
@@ -265,7 +265,7 @@ In quick succession, do the following:
 
 4. Under the 'Activiti v7 REST API' collection, navigate to 'keycloak > getKeycloakToken'
 
-5. Click ```send```. You should
+5. Click ```send```. You should 
 
 6. Under the 'Activiti v7 REST API' collection, navigate to 'rb-my-app > getProcessDefinitions'
 
