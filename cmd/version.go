@@ -19,21 +19,47 @@ import (
 
 	"github.com/doug4j/acdu/pkg/common"
 	"github.com/doug4j/acdu/pkg/generate/genprocbun"
+	"github.com/doug4j/acdu/pkg/generate/genproccon"
 	"github.com/spf13/cobra"
+)
+
+var (
+	//Version is the version of acdu.
+	Version = "No Version Provided"
+	//BuildTime is the time which the software was built.
+	BuildTime = "No Build Time Provided"
+	//Branch is the name of the branch for the build.
+	Branch = "No Branch Provided"
+	//CommitHash is the git commit hash for the build.
+	CommitHash = "No Commit Hash Provided"
+	//HasUncommitted indicates whether there is uncommitted work in git for the build
+	HasUncommitted = "Has Uncommitted Not Set"
 )
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Shows the version and other variables. [NOT IMPLEMENTED]",
-	Long:  `Shows the version and other variables. [NOT IMPLEMENTED]`,
+	Short: "Shows the version and other variables.",
+	Long:  `Shows the version and other variables.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		common.LogInfo(fmt.Sprintf(`
-Runtime Bundle
+Build Info
+- Version:         '%v' 
+- Branch:          '%v'
+- Build Time:      '%v'
+- Has Uncommitted: '%v'
+- Commit Hash:     '%v' 
+`, Version, Branch, BuildTime, HasUncommitted, CommitHash))
+		common.LogInfo(fmt.Sprintf(`
+Runtime Bundle Generator
 - Latest Supported Tag '%v' 
 - Downloader:          '%v'
 - Implementations:     '%v'
 `, genprocbun.LatestSupportedTag, genprocbun.DefaultDownloader, genprocbun.ImplementationsString()))
-		common.LogNotImplemented("version")
+		common.LogInfo(fmt.Sprintf(`
+Cloud Connector Generator
+- Latest Supported Tag '%v' 
+- Implementations:     '%v'
+`, genproccon.LatestSupportedTag, genproccon.ImplementationsString()))
 	},
 }
 
