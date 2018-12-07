@@ -2,7 +2,7 @@
 
 
 if [ -z "$(git status --porcelain)" ]; then 
-  export UNCOMMITTED=true
+  export UNCOMMITTED=false
   # Working directory clean
 else 
   export UNCOMMITTED=true
