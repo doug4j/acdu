@@ -20,7 +20,7 @@ import (
 
 var installProcessCmd = &cobra.Command{
 	Use:     "process",
-	Short:   "Installs Process related objects. [NOT IMPLEMENTED]",
+	Short:   "Installs Process related objects.",
 	Long:    `Installs Process related objects.`,
 	Aliases: aliases("process"),
 	Run: func(cmd *cobra.Command, args []string) {

@@ -41,25 +41,19 @@ var versionCmd = &cobra.Command{
 	Short: "Shows the version and other variables.",
 	Long:  `Shows the version and other variables.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		common.LogInfo(fmt.Sprintf(`
-Build Info
+		common.LogInfo(fmt.Sprintf(`Build Info
 - Version:         '%v' 
 - Branch:          '%v'
 - Build Time:      '%v'
 - Has Uncommitted: '%v'
-- Commit Hash:     '%v' 
-`, Version, Branch, BuildTime, HasUncommitted, CommitHash))
-		common.LogInfo(fmt.Sprintf(`
-Runtime Bundle Generator
+- Commit Hash:     '%v'`, Version, Branch, BuildTime, HasUncommitted, CommitHash))
+		common.LogInfo(fmt.Sprintf(`Runtime Bundle Generator
 - Latest Supported Tag '%v' 
 - Downloader:          '%v'
-- Implementations:     '%v'
-`, genprocbun.LatestSupportedTag, genprocbun.DefaultDownloader, genprocbun.ImplementationsString()))
-		common.LogInfo(fmt.Sprintf(`
-Cloud Connector Generator
+- Implementations:     '%v'`, genprocbun.LatestSupportedTag, genprocbun.DefaultDownloader, genprocbun.ImplementationsString()))
+		common.LogInfo(fmt.Sprintf(`Cloud Connector Generator
 - Latest Supported Tag '%v' 
-- Implementations:     '%v'
-`, genproccon.LatestSupportedTag, genproccon.ImplementationsString()))
+- Implementations:     '%v'`, genproccon.LatestSupportedTag, genproccon.ImplementationsString()))
 	},
 }
 
