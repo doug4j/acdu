@@ -255,12 +255,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{gatewayUrl}}/rb-my-app/v1/process-instances",
+							"raw": "{{gatewayUrl}}/{{projRb}}/v1/process-instances",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"process-instances"
 							]
@@ -284,15 +284,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"processDefinitionId\": \"SimpleProcess:1:4\",\n  \"variables\": {\n    \"firstName\": \"Paulo\",\n    \"lastName\": \"Silva\",\n    \"age\": 25\n  },\n  \"payloadType\":\"StartProcessPayload\"\n}"
+							"raw": "{\n  \"processDefinitionKey\": \"SimpleProcess:1:4\",\n  \"variables\": {\n    \"firstName\": \"Paulo\",\n    \"lastName\": \"Silva\",\n    \"age\": 25\n  },\n  \"payloadType\":\"StartProcessPayload\"\n}"
 						},
 						"url": {
-							"raw": "{{gatewayUrl}}/rb-my-app/v1/process-instances",
+							"raw": "{{gatewayUrl}}/{{projRb}}/v1/process-instances",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"process-instances"
 							]
@@ -315,12 +315,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{gatewayUrl}}/rb-my-app/v1/process-instances/{processInstanceId}/variables",
+							"raw": "{{gatewayUrl}}/{{projRb}}/v1/process-instances/{processInstanceId}/variables",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"process-instances",
 								"{processInstanceId}",
@@ -345,13 +345,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{gatewayUrl}}/rb-my-app/v1/tasks?page=0&size=10",
+							"raw": "http://{{gatewayUrl}}/{{projRb}}/v1/tasks?page=0&size=10",
 							"protocol": "http",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"tasks"
 							],
@@ -388,12 +388,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{gatewayUrl}}/rb-my-app/v1/tasks/{taskId}",
+							"raw": "{{gatewayUrl}}/{{projRb}}/v1/tasks/{taskId}",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"tasks",
 								"{taskId}"
@@ -421,13 +421,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{gatewayUrl}}/rb-my-app/v1/tasks/{taskId}/claim?assignee=hruser",
+							"raw": "http://{{gatewayUrl}}/{{projRb}}/v1/tasks/{taskId}/claim?assignee=hruser",
 							"protocol": "http",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"tasks",
 								"{taskId}",
@@ -462,12 +462,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{gatewayUrl}}/rb-my-app/v1/tasks/{taskId}/complete",
+							"raw": "{{gatewayUrl}}/{{projRb}}/v1/tasks/{taskId}/complete",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"tasks",
 								"{taskId}",
@@ -492,12 +492,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{gatewayUrl}}/rb-my-app/v1/process-definitions",
+							"raw": "{{gatewayUrl}}/{{projRb}}/v1/process-definitions",
 							"host": [
 								"{{gatewayUrl}}"
 							],
 							"path": [
-								"rb-my-app",
+								"{{projRb}}",
 								"v1",
 								"process-definitions"
 							]

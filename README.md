@@ -115,29 +115,29 @@ Note it is normal to wait for ~20 minutes after issuing the above commmand.
 
 ```
 acdu install infra -i 192.168.7.24.nip.io -n activiti7
-2018/12/05 19:33:29 ⏳ Deploy project via helm (and verify) [helm install stable/nginx-ingress --namespace activiti7 --timeout 720 --wait]...
-2018/12/05 19:33:32 👍 Code compiled and packaged  [helm install stable/nginx-ingress --namespace activiti7 --timeout 720 --wait]
-2018/12/05 19:33:32 ⏱ Deploy project via helm (and verify) elapsed time: 3.294s
-2018/12/05 19:33:32 ⏳ Waiting until all pods are ready, expiring at [2018-12-05 19:45:32.570122 -0500 EST m=+723.331302388], pods being checked: [killjoy-bear-nginx-ingress-controller-59c986f84-f7cnn killjoy-bear-nginx-ingress-default-backend-95dd5fc44-njtn4]
-2018/12/05 19:33:52 👍 All Containers in Namespace [activiti7] ready. Pods [killjoy-bear-nginx-ingress-controller-59c986f84-f7cnn killjoy-bear-nginx-ingress-default-backend-95dd5fc44-njtn4] with 2 containers in total
-2018/12/05 19:33:52 ⏱ Install Ingress elapsed time: 23.339s
-2018/12/05 19:33:52 ⏱ Elapsed time thus far: 23.339s
-2018/12/05 19:33:52 ⏳ Deploy project via helm (and verify) [helm install activiti-cloud-charts/activiti-cloud-full-example --namespace activiti7 --timeout 720 --wait --set global.keycloak.url=http://activiti-keycloak.192.168.7.24.nip.io/auth --set global.gateway.host=activiti-cloud-gateway.192.168.7.24.nip.io --set infrastructure.activiti-keycloak.keycloak.keycloak.ingress.hosts[0]=activiti-keycloak.192.168.7.24.nip.io --set infrastructure.activiti-cloud-gateway.ingress.hostName=activiti-cloud-gateway.192.168.7.24.nip.io --set application.activiti-cloud-connector.enabled=false --set application.runtime-bundle.enabled=false --set activiti-cloud-modeling.enabled=true]...
-2018/12/05 19:37:43 👍 Code compiled and packaged  [helm install activiti-cloud-charts/activiti-cloud-full-example --namespace activiti7 --timeout 720 --wait --set global.keycloak.url=http://activiti-keycloak.192.168.7.24.nip.io/auth --set global.gateway.host=activiti-cloud-gateway.192.168.7.24.nip.io --set infrastructure.activiti-keycloak.keycloak.keycloak.ingress.hosts[0]=activiti-keycloak.192.168.7.24.nip.io --set infrastructure.activiti-cloud-gateway.ingress.hostName=activiti-cloud-gateway.192.168.7.24.nip.io --set application.activiti-cloud-connector.enabled=false --set application.runtime-bundle.enabled=false --set activiti-cloud-modeling.enabled=true]
-2018/12/05 19:37:43 ⏱ Deploy project via helm (and verify) elapsed time: 3m51.244s
-2018/12/05 19:37:43 ⏳ Waiting until all pods are ready, expiring at [2018-12-05 19:49:43.846965 -0500 EST m=+974.615886819], pods being checked: [famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff famous-sasquatch-activiti-cloud-gateway-b45f9d4b5-46tj8 famous-sasquatch-activiti-cloud-modeling-84df585675-dt8rw famous-sasquatch-activiti-cloud-query-7d9d465f5b-9jcbh famous-sasquatch-key-0 famous-sasquatch-rabbitmq-0 killjoy-bear-nginx-ingress-controller-59c986f84-f7cnn killjoy-bear-nginx-ingress-default-backend-95dd5fc44-njtn4]
-2018/12/05 19:41:29 👍 All Containers in Namespace [activiti7] ready. Pods [famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff famous-sasquatch-activiti-cloud-gateway-b45f9d4b5-46tj8 famous-sasquatch-activiti-cloud-modeling-84df585675-dt8rw famous-sasquatch-activiti-cloud-query-7d9d465f5b-9jcbh famous-sasquatch-key-0 famous-sasquatch-rabbitmq-0 killjoy-bear-nginx-ingress-controller-59c986f84-f7cnn killjoy-bear-nginx-ingress-default-backend-95dd5fc44-njtn4] with 9 containers in total
-2018/12/05 19:41:29 ⏱ Install Activiti Full Example elapsed time: 7m37.148s
-2018/12/05 19:41:29 ⏱ Elapsed time thus far: 8m0.487s
-2018/12/05 19:41:29 ℹ️ identityURL url is available at
+2018/12/07 11:31:35 ⏳ [WORKING]    Deploy project via helm (and verify) [helm install stable/nginx-ingress --namespace activiti7 --timeout 720 --wait]...
+2018/12/07 11:31:39 👍 [OK]         Code compiled and packaged  [helm install stable/nginx-ingress --namespace activiti7 --timeout 720 --wait]
+2018/12/07 11:31:39 ⏱ [TIME]       Deploy project via helm (and verify) elapsed time: 3.93s
+2018/12/07 11:31:39 ⏳ [WORKING]    Waiting until all pods are ready, expiring at [2018-12-07 11:43:39.190995 -0500 EST m=+723.970970062], pods being checked: [youngling-ragdoll-nginx-ingress-controller-79644f7b56-7wsbj youngling-ragdoll-nginx-ingress-default-backend-78d6bd5998d5zr7]
+2018/12/07 11:31:59 👍 [OK]         All Containers in Namespace [activiti7] ready. Pods [youngling-ragdoll-nginx-ingress-controller-79644f7b56-7wsbj youngling-ragdoll-nginx-ingress-default-backend-78d6bd5998d5zr7] with 2 containers in total
+2018/12/07 11:31:59 ⏱ [TIME]       Install Ingress elapsed time: 24.001s
+2018/12/07 11:31:59 ⏱ [TIME]       Elapsed time thus far: 24.001s
+2018/12/07 11:31:59 ⏳ [WORKING]    Deploy project via helm (and verify) [helm install activiti-cloud-charts/activiti-cloud-full-example --namespace activiti7 --timeout 720 --wait --set global.keycloak.url=http://activiti-keycloak.192.168.7.24.nip.io/auth --set global.gateway.host=activiti-cloud-gateway.192.168.7.24.nip.io --set infrastructure.activiti-keycloak.keycloak.keycloak.ingress.hosts[0]=activiti-keycloak.192.168.7.24.nip.io --set infrastructure.activiti-cloud-gateway.ingress.hostName=activiti-cloud-gateway.192.168.7.24.nip.io --set application.activiti-cloud-connector.enabled=false --set application.runtime-bundle.enabled=false --set activiti-cloud-modeling.enabled=true]...
+2018/12/07 11:33:43 👍 [OK]         Code compiled and packaged  [helm install activiti-cloud-charts/activiti-cloud-full-example --namespace activiti7 --timeout 720 --wait --set global.keycloak.url=http://activiti-keycloak.192.168.7.24.nip.io/auth --set global.gateway.host=activiti-cloud-gateway.192.168.7.24.nip.io --set infrastructure.activiti-keycloak.keycloak.keycloak.ingress.hosts[0]=activiti-keycloak.192.168.7.24.nip.io --set infrastructure.activiti-cloud-gateway.ingress.hostName=activiti-cloud-gateway.192.168.7.24.nip.io --set application.activiti-cloud-connector.enabled=false --set application.runtime-bundle.enabled=false --set activiti-cloud-modeling.enabled=true]
+2018/12/07 11:33:43 ⏱ [TIME]       Deploy project via helm (and verify) elapsed time: 1m44.214s
+2018/12/07 11:33:43 ⏳ [WORKING]    Waiting until all pods are ready, expiring at [2018-12-07 11:45:43.451963 -0500 EST m=+848.235824737], pods being checked: [fallacious-turkey-activiti-cloud-audit-94d87cf79-pm4nf fallacious-turkey-activiti-cloud-gateway-79bffd74d-87mlz fallacious-turkey-activiti-cloud-modeling-76cfc9684-45wh2 fallacious-turkey-activiti-cloud-query-5df745f5b4-nr5rs fallacious-turkey-ke-0 fallacious-turkey-rabbitmq-0 youngling-ragdoll-nginx-ingress-controller-79644f7b56-7wsbj youngling-ragdoll-nginx-ingress-default-backend-78d6bd5998d5zr7]
+2018/12/07 11:36:40 👍 [OK]         All Containers in Namespace [activiti7] ready. Pods [fallacious-turkey-activiti-cloud-audit-94d87cf79-pm4nf fallacious-turkey-activiti-cloud-gateway-79bffd74d-87mlz fallacious-turkey-activiti-cloud-modeling-76cfc9684-45wh2 fallacious-turkey-activiti-cloud-query-5df745f5b4-nr5rs fallacious-turkey-ke-0 fallacious-turkey-rabbitmq-0 youngling-ragdoll-nginx-ingress-controller-79644f7b56-7wsbj youngling-ragdoll-nginx-ingress-default-backend-78d6bd5998d5zr7] with 9 containers in total
+2018/12/07 11:36:40 ⏱ [TIME]       Install Activiti Full Example elapsed time: 4m40.969s
+2018/12/07 11:36:40 ⏱ [TIME]       Elapsed time thus far: 5m4.97s
+2018/12/07 11:36:40 ℹ️ [INFO]       identityURL url is available at
 http://activiti-keycloak.192.168.7.24.nip.io/auth/admin/master/console
 default user/name: admin/admin
-2018/12/05 19:41:29 ℹ️ modelerURL url is available at
+2018/12/07 11:36:40 ℹ️ [INFO]       modelerURL url is available at
 http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling
 default user/name: modeler/password
-2018/12/05 19:41:29 ℹ️ modelingSwaggerURL url is available at
+2018/12/07 11:36:40 ℹ️ [INFO]       modelingSwaggerURL url is available at
 http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling-backend/swagger-ui.html
-2018/12/05 19:41:29 ⏱ Total Elapsed time: 8m0.487s
+2018/12/07 11:36:40 ⏱ [TIME]       Total Elapsed time: 5m4.97s
 ```
 
 Notice the Helm deployment prefix for the Activiti cloud infrastructure ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in the pattern ```${activitiInfraDeployName}-activiti-cloud-audit-...``` 

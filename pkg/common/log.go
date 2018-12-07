@@ -107,7 +107,6 @@ func formatExit(msg string) string {
 func LogNotImplemented(msg string) {
 	if runtime.GOOS == "windows" {
 		log.Println(formatNotImplemented(msg))
-		os.Exit(1)
 		return
 	}
 	log.Println("🧐 " + formatNotImplemented(msg))
