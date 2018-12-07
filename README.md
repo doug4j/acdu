@@ -142,7 +142,7 @@ http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling-backen
 
 Notice the Helm deployment prefix for the Activiti cloud infrastructure ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in the pattern ```${activitiInfraDeployName}```-activiti-cloud-audit-... 
 
-Per the above, log into the modeling app, ensuring it is up-and-running via http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling or http://activiti-cloud-gateway.```${ipAddress}```.nip.io/activiti-cloud-modeling
+Per the above, log into the modeling app, ensuring it is up-and-running via ```http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling``` or ```http://activiti-cloud-gateway.${ipAddress}.nip.io/activiti-cloud-modeling```
 
 ## Generate Runtime Bundle Code
 
