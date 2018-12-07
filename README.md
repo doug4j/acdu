@@ -140,9 +140,9 @@ http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling-backen
 2018/12/05 19:41:29 ⏱ Total Elapsed time: 8m0.487s
 ```
 
-Notice the Helm deployment prefix for the Activiti cloud infrastructure as in ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in ```${activitiInfraDeployName}```-activiti-cloud-audit-5d44f5c69c-j79ff 
+Notice the Helm deployment prefix for the Activiti cloud infrastructure ```famous-sasquatch-activiti-cloud-audit-5d44f5c69c-j79ff``` as in the pattern ```${activitiInfraDeployName}```-activiti-cloud-audit-... 
 
-Per the above, log into the modeling app, ensuring it is up-and-running.
+Per the above, log into the modeling app, ensuring it is up-and-running via http://activiti-cloud-gateway.192.168.7.24.nip.io/activiti-cloud-modeling or http://activiti-cloud-gateway.```${ipAddress}```.nip.io/activiti-cloud-modeling
 
 ## Generate Runtime Bundle Code
 
