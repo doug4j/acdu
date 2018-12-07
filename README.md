@@ -8,8 +8,13 @@ See [Command Line Doc](./doc/acdu.md) for more details.
 * [Docker for Desktop](https://www.docker.com/products/docker-desktop) with Kubernetes enabled and >=10 gigs of ram and >=4 cores
 * [Helm](https://docs.helm.sh/using_helm/#installing-helm) installed
 * [Postman](https://www.getpostman.com/apps) installed
-
-TODO(@doug4j@gmail.com): Verison and Package acdu
+* Install acdu into your path:
+* - MacOS [linux_386](bin/darwin_amd64/acdu)
+* - Linux 32 bit [linux_386](bin/linux_386/acdu)
+* - Linux arm [linux_386](bin/linux_arm/acdu)
+* - Linux 64 bit [linux_386](bin/linux_arm/acdu)
+* - Windows 32 bit [linux_386](bin/windows_386/acdu.exe)
+* - Windows 64 bit [linux_386](bin/windows_amd64/acdu.exe)
 
 ## Pre-req Config 
 
