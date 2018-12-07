@@ -128,5 +128,5 @@ func launchServiceSwagger(parms Parms, simpleProp common.SimpleProp, pom common.
 	return common.LoadURLInBrowser(serviceURL(parms, simpleProp, pom), swaggerURLName, "")
 }
 func serviceURL(parms Parms, simpleProp common.SimpleProp, pom common.SimpleProjectObjectModel) string {
-	return fmt.Sprintf("http://activiti-keycloak.%v/%v-%v/swagger-ui.html", parms.IngressIP, simpleProp.SpringAppName, pom.ArtifactID)
+	return fmt.Sprintf("http://activiti-cloud-gateway.%v/%v-%v/swagger-ui.html", parms.IngressIP, simpleProp.SpringAppName, pom.ArtifactID)
 }

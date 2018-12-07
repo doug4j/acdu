@@ -81,7 +81,7 @@ func LogNotImplemented(msg string) {
 		os.Exit(1)
 		return
 	}
-	log.Printf("🧐" + msg)
+	log.Printf("🧐 " + msg)
 }
 
 //LogInfo does Println with conditional INFO prefix based on platform
