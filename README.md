@@ -3,18 +3,20 @@
 See [Command Line Doc](./doc/acdu.md) for more details.
 
 ## Pre-reqs
+3rd Party:
 * [Maven](https://maven.apache.org/download.cgi) Installed
 * [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 8 Installed
 * [Docker for Desktop](https://www.docker.com/products/docker-desktop) with Kubernetes enabled and >=10 gigs of ram and >=4 cores
 * [Helm](https://docs.helm.sh/using_helm/#installing-helm) installed
 * [Postman](https://www.getpostman.com/apps) installed
-* Install acdu into your path:
-- [MacOS](bin/darwin_amd64/acdu)
-- [Linux 32 bit](bin/linux_386/acdu)
-- [Linux arm](bin/linux_arm/acdu)
-- [Linux 64 bit](bin/linux_arm/acdu)
-- [Windows 32 bit](bin/windows_386/acdu.exe)
-- [Windows 64 bit](bin/windows_amd64/acdu.exe)
+
+Install acdu into your path:
+* [MacOS](bin/darwin_amd64/acdu)
+* [Linux 32 bit](bin/linux_386/acdu)
+* [Linux arm](bin/linux_arm/acdu)
+* [Linux 64 bit](bin/linux_arm/acdu)
+* [Windows 32 bit](bin/windows_386/acdu.exe)
+* [Windows 64 bit](bin/windows_amd64/acdu.exe)
 
 ## Pre-req Config 
 
