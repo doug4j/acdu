@@ -11,12 +11,9 @@ See [Command Line Doc](./doc/acdu.md) for more details.
 * [Postman](https://www.getpostman.com/apps) installed
 
 Install acdu into your path:
-* [MacOS](bin/darwin_amd64_acdu.tar.gz)
-* [Linux 32 bit](bin/linux_386_acdu.tar.gz)
-* [Linux arm](bin/linux_arm_acdu.tar.gz)
-* [Linux 64 bit](bin/linux_arm_acdu.tar.gz)
-* [Windows 32 bit](bin/windows_386_acdu.zip)
-* [Windows 64 bit](bin/windows_amd64_acdu.zip)
+* [MacOS](raw/master/bin/acdu_darwin_amd64.tar.gz)
+* [Linux 64 bit](raw/master/bin/linux_arm_acdu.tar.gz)
+* [Windows 64 bit](raw/master/bin/acdu_windows_amd64.zip)
 
 ## Pre-req Config 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./install-first.sh
+#./install-first.sh
 
 if [ -z "$(git status --porcelain)" ]; then 
   export UNCOMMITTED=false
@@ -13,42 +13,39 @@ fi
 export GIT_COMMIT=$(git rev-list -1 HEAD) 
 export BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
 export NOW=$(date -u '+%Y-%m-%d_%I:%M:%S%p')
+export ACDU_TEMP_BUILD_DIR=$(mktemp -d)
+export ACDU_DIR=$(pwd)
+echo "Branch:         $BRANCH"
+echo "BuildTime:      $NOW"
+echo "Uncommitted:    $UNCOMMITTED"
+echo "CommitHash:     $GIT_COMMIT"
+echo "Temp build Dir: $ACDU_TEMP_BUILD_DIR"
+echo "ACDU dir:       $ACDU_DIR"
 
-echo Packaging 6 platforms...
+echo Packaging 3 platforms...
+env GOOS=linux   GOARCH=amd64 go build -o $ACDU_TEMP_BUILD_DIR/bin/acdu_linux_amd64/acdu       -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
+echo "Built linux amd64"
+env GOOS=darwin  GOARCH=amd64 go build -o $ACDU_TEMP_BUILD_DIR/bin/acdu_darwin_amd64/acdu      -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
+echo "Built darwin amd64"
+env GOOS=windows GOARCH=amd64 go build -o $ACDU_TEMP_BUILD_DIR/bin/acdu_windows_amd64/acdu.exe -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
+echo "Built darwin amd64"
+echo Built 3 platforms
 
-env GOOS=linux GOARCH=arm go build -o ./bin/linux_arm/acdu -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
-env GOOS=linux GOARCH=386 go build -o ./bin/linux_386/acdu -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
-env GOOS=linux GOARCH=amd64 go build -o ./bin/linux_amd64/acdu -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
-env GOOS=darwin GOARCH=amd64 go build -o ./bin/darwin_amd64/acdu -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
-env GOOS=windows GOARCH=386 go build -o ./bin/windows_386/acdu.exe -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
-env GOOS=windows GOARCH=amd64 go build -o ./bin/windows_amd64/acdu.exe -ldflags "-X github.com/doug4j/acdu/cmd.CommitHash=$GIT_COMMIT -X github.com/doug4j/acdu/cmd.BuildTime=$NOW -X github.com/doug4j/acdu/cmd.Branch=$BRANCH -X github.com/doug4j/acdu/cmd.HasUncommitted=$UNCOMMITTED"
-
-echo Built 6 platforms
-
-echo Compressing binaries...
-
-tar -czvf ./bin/linux_arm_acdu.tar.gz ./bin/linux_arm/acdu
-tar -czvf ./bin/linux_386_acdu.tar.gz ./bin/linux_386/acdu
-tar -czvf ./bin/linux_amd64_acdu.tar.gz ./bin/linux_amd64/acdu
-tar -czvf ./bin/darwin_amd64_acdu.tar.gz ./bin/darwin_amd64/acdu
-zip -r ./bin/windows_386_acdu.zip  ./bin/windows_386/acdu.exe
-zip -r ./bin/windows_amd64_acdu.zip ./bin/windows_amd64/acdu.exe
+echo Compressing binaries... 
+#Linux 64 bit Intel/AMD
+tar -czvf ./bin/acdu_linux_amd64.tar.gz  -C $ACDU_TEMP_BUILD_DIR/bin acdu_linux_amd64
+#MacOS
+tar -czvf ./bin/acdu_darwin_amd64.tar.gz -C $ACDU_TEMP_BUILD_DIR/bin acdu_darwin_amd64
+#windows 64 bit
+#rm ./bin/acdu_windows_amd64.zip
+pushd $ACDU_TEMP_BUILD_DIR/bin/
+zip -r $ACDU_DIR/bin/acdu_windows_amd64.zip ./acdu_windows_amd64
+popd
 
 echo Compressed binaries
 
 echo Cleaning up...
-
-rm ./bin/linux_arm/acdu
-rm ./bin/linux_386/acdu
-rm ./bin/linux_amd64/acdu
-rm ./bin/darwin_amd64/acdu
-rm  ./bin/windows_386/acdu.exe
-rm ./bin/windows_amd64/acdu.exe
-
+rm -r $ACDU_TEMP_BUILD_DIR
 echo Cleaned up
 
-echo Branch:      $BRANCH
-echo BuildTime:   $NOW
-echo Uncommitted: $UNCOMMITTED
-echo CommitHash:  $GIT_COMMIT
 echo Done
