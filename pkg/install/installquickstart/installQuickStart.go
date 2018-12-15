@@ -53,7 +53,7 @@ func (l installQuickStarter) Install(parms Parms) error {
 
 	var err error
 
-	err = common.Command("mvn", []string{"package"}, parms.SourceDir, "Compile and package code")
+	_, err = common.Command("mvn", []string{"package"}, parms.SourceDir, "Compile and package code")
 	if err != nil {
 		return err
 	}
@@ -66,18 +66,18 @@ func (l installQuickStarter) Install(parms Parms) error {
 	if err != nil {
 		return err
 	}
-	err = common.Command("docker", []string{"build", "-t", pom.ArtifactID, "."}, parms.SourceDir, "Build docker image into local registry")
+	_, err = common.Command("docker", []string{"build", "-t", pom.ArtifactID, "."}, parms.SourceDir, "Build docker image into local registry")
 	if err != nil {
 		return err
 	}
 
-	err = common.Command("helm", []string{"dep", "update", fmt.Sprintf("./charts/%v", pom.ArtifactID)}, parms.SourceDir, "Update helm dependencies")
+	_, err = common.Command("helm", []string{"dep", "update", fmt.Sprintf("./charts/%v", pom.ArtifactID)}, parms.SourceDir, "Update helm dependencies")
 	if err != nil {
 		return err
 	}
 
 	chartName := fmt.Sprintf("./charts/%v", pom.ArtifactID)
-	err = common.Command("helm",
+	_, err = common.Command("helm",
 		[]string{
 			"install", chartName, "--namespace", parms.Namespace, "--timeout", strconv.Itoa(parms.TimeoutSeconds), "--wait",
 			"--set", fmt.Sprintf("global.rabbitmq.host.value=%v", parms.MQHost),

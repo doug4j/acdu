@@ -36,7 +36,7 @@ type infrastructureInstaller struct {
 //Parms are the parameters for the command.
 type Parms struct {
 	//TODO(doug4j@gmail.com): implment validators for parameters
-	Namespace                     string `validate:"min=2" arg:"required=true,shortname=n" help:"Kubernetes namespace to install into."`
+	Namespace                     string `validate:"min=2" arg:"required=true,shortname=n" help:"Kubernetes namespace."`
 	IngressIP                     string `validate:"min=2" arg:"required=true,shortname=i" help:"Kubernetes ingress IP address. Tip: for a local install, when connected to the internet this can suffixed with '.nip.io' to map external ips to internal ones."`
 	Host                          string `validate:"min=2" arg:"shortname=o,defaultValue=localhost" help:"Host name of the kubernetes api."`
 	TimeoutSeconds                int    `validate:"min=0" arg:"shortname=t,defaultValue=720" help:"Number of seconds to wait until the kubernetes commands give up."`
@@ -99,7 +99,7 @@ func (l infrastructureInstaller) Install(parms Parms) error {
 
 func (l infrastructureInstaller) installIngress(parms Parms) error {
 	chartName := "stable/nginx-ingress"
-	err := common.Command("helm",
+	_, err := common.Command("helm",
 		[]string{
 			"install", chartName, "--namespace", parms.Namespace, "--timeout", strconv.Itoa(parms.TimeoutSeconds), "--wait",
 		},
@@ -112,7 +112,7 @@ func (l infrastructureInstaller) installIngress(parms Parms) error {
 
 func (l infrastructureInstaller) activitiFullExample(parms Parms) error {
 	chartName := "activiti-cloud-charts/activiti-cloud-full-example"
-	err := common.Command("helm",
+	_, err := common.Command("helm",
 		[]string{
 			"install", chartName, "--namespace", parms.Namespace, "--timeout", strconv.Itoa(parms.TimeoutSeconds), "--wait",
 			"--set", fmt.Sprintf("global.keycloak.url=http://activiti-keycloak.%v/auth", parms.IngressIP),

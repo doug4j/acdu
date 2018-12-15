@@ -68,17 +68,19 @@ func ImplementationsString() string {
 
 //Defaults
 
-const LatestSupportedTag = sevenDot0Dot0DotBeta3
+const LatestSupportedTag = sevenDot0Dot0DotBeta4
 const DefaultDownloader = common.DownloaderStereotypeQuickstart
 
 const downloaderKeyFormat = "downloader-%v-tag-%v"
 
+const sevenDot0Dot0DotBeta4 = "7.0.0.Beta4"
 const sevenDot0Dot0DotBeta3 = "7.0.0.Beta3"
 
 type generateRuntimeBundler func(parms Parms) error
 
 var generatorsByKey = map[string]generateRuntimeBundler{
 	fmt.Sprintf(downloaderKeyFormat, common.DownloaderStereotypeQuickstart, sevenDot0Dot0DotBeta3): downloaderQuickstartType0,
+	fmt.Sprintf(downloaderKeyFormat, common.DownloaderStereotypeQuickstart, sevenDot0Dot0DotBeta4): downloaderQuickstartType0,
 
 	//This download implementor is probably only useful for beta3, but keeping the code in there as it's likely
 	fmt.Sprintf(downloaderKeyFormat, common.DownloaderStereotypeExample, sevenDot0Dot0DotBeta3): downloaderExampleType0,

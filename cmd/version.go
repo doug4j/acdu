@@ -72,6 +72,18 @@ var versionCmd = &cobra.Command{
 		}
 		common.LogInfo(fmt.Sprintf(`Kubernetes
 - Client API     '%v'`, kubeAPI.RESTClient().APIVersion()))
+		kubectlVersion, err := common.Command("kubectl", []string{"version"}, "", "Kubectl Version")
+		if err != nil {
+			common.LogExit(fmt.Sprintf("Cannot get kubectl version:%v", err))
+		}
+		common.LogInfo(fmt.Sprintf(`Kubectl version
+%v`, kubectlVersion))
+		helmVersion, err := common.Command("helm", []string{"version"}, "", "Helm Version")
+		if err != nil {
+			common.LogExit(fmt.Sprintf("Cannot get helm version:%v", err))
+		}
+		common.LogInfo(fmt.Sprintf(`Helm version
+%v`, helmVersion))
 	},
 }
 

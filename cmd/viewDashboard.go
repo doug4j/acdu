@@ -15,38 +15,35 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/doug4j/acdu/pkg/common"
+	"github.com/doug4j/acdu/pkg/view/viewdash"
 	"github.com/spf13/cobra"
 )
 
-var installCmd = &cobra.Command{
-	Use:   "install",
-	Short: "Creates objects into a local Kubernetes environment.",
-	Long:  `Creates objects into a local Kubernetes environment.`,
+var viewDashboardCmd = &cobra.Command{
+	Use:     "dashboard",
+	Short:   "Shows the Kubernetes dashboard.",
+	Long:    `Shows the Kubernetes dashboard.`,
+	Aliases: aliases("dashboard"),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			cmd.Help()
+		parm := viewdash.Parms{
+			Namespace:   viewdash.ArgNamespace,
+			Interactive: viewdash.ArgInteractive,
+			Host:        viewdash.ArgHost,
+		}
+		command, err := viewdash.NewDashboardViewing()
+		if err != nil {
+			common.LogError(err.Error())
 			return
 		}
-		for _, subCmd := range cmd.Commands() {
-			if args[0] == subCmd.Name() {
-				cmd.Run(subCmd, args[1:])
-				return
-			}
+		err = command.ViewDashboard(parm)
+		if err != nil {
+			common.LogError(err.Error())
+			return
 		}
-		//common.LogInfo(fmt.Sprintf("%v", spew.Sdump(cmd)))
-		common.LogInfo(fmt.Sprintf("%#v", args))
-		common.LogInfo(fmt.Sprintf("has subcommands %v", cmd.HasSubCommands()))
-		cmd.Help()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(installCmd)
-	installCmd.AddCommand(installInfraCmd)
-	installCmd.AddCommand(installModelerCmd)
-	installCmd.AddCommand(installProcessCmd)
-	installCmd.AddCommand(installKubeDashboardCmd)
+	viewdash.FillCobraCommand(viewDashboardCmd)
 }

@@ -14,21 +14,30 @@
 
 package cmd
 
-var aliasesDefs = map[string][]string{
-	"delete":         []string{"del"},
-	"namespace":      []string{"ns"},
-	"generate":       []string{"gen"},
-	"markdown":       []string{"md"},
-	"process":        []string{"proc"},
-	"bundle":         []string{"rb", "bun", "rtbun"},
-	"connector":      []string{"con"},
-	"infrastructure": []string{"infra"},
-	"modeler":        []string{"mod"},
-	"project":        []string{"proj"},
-	"dashboard":      []string{"dash"},
+import (
+	"github.com/spf13/cobra"
+)
+
+var viewCmd = &cobra.Command{
+	Use:   "view",
+	Short: "Views objects supporting an Activiti Cloud environment.",
+	Long:  `Views objects supporting an Activiti Cloud environment.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			return
+		}
+		for _, subCmd := range cmd.Commands() {
+			if args[0] == subCmd.Name() {
+				cmd.Run(subCmd, args[1:])
+				return
+			}
+		}
+		cmd.Help()
+	},
 }
 
-func aliases(name string) (answer []string) {
-	answer = aliasesDefs[name]
-	return answer
+func init() {
+	rootCmd.AddCommand(viewCmd)
+	viewCmd.AddCommand(viewDashboardCmd)
 }

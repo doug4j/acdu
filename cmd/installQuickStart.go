@@ -17,7 +17,6 @@ package cmd
 import (
 	"github.com/doug4j/acdu/pkg/common"
 	"github.com/doug4j/acdu/pkg/install/installquickstart"
-
 	"github.com/spf13/cobra"
 )
 
@@ -34,6 +33,7 @@ var installQuickStartCmd = &cobra.Command{
 			IdentityHost:                  installquickstart.ArgIdentityHost,
 			MQHost:                        installquickstart.ArgMQHost,
 			QueryForAllPodsRunningSeconds: installquickstart.ArgQueryForAllPodsRunningSeconds,
+			Interactive:                   installquickstart.ArgInteractive,
 			TimeoutSeconds:                installquickstart.ArgTimeoutSeconds,
 		}
 		installer, err := installquickstart.NewInstallQuickStarting()

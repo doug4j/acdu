@@ -70,13 +70,15 @@ func ImplementationsString() string {
 
 //Defaults
 
-const LatestSupportedTag = sevenDot0Dot0DotBeta3
+const LatestSupportedTag = sevenDot0Dot0DotBeta4
 
+const sevenDot0Dot0DotBeta4 = "7.0.0.Beta4"
 const sevenDot0Dot0DotBeta3 = "7.0.0.Beta3"
 
 type generateRuntimeBundler func(parms Parms) error
 
 var generatorsByTag = map[string]generateRuntimeBundler{
+	sevenDot0Dot0DotBeta4: downloaderQuickstartType0,
 	sevenDot0Dot0DotBeta3: downloaderQuickstartType0,
 }
 

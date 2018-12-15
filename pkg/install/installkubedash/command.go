@@ -1,4 +1,4 @@
-package installquickstart
+package installkubedash
 
 import (
 	"reflect"
@@ -9,18 +9,6 @@ import (
 
 //ArgNamespace is used to populate command line argments for the Namespace.
 var ArgNamespace string
-
-//ArgSourceDir is used to populate command line argments for the SourceDir.
-var ArgSourceDir string
-
-//ArgMQHost is used to populate command line argments for the MQHost.
-var ArgMQHost string
-
-//ArgIdentityHost is used to populate command line argments for the IdentityHost.
-var ArgIdentityHost string
-
-//ArgIngressIP is used to populate command line argments for the IngressIP.
-var ArgIngressIP string
 
 //ArgTimeoutSeconds is used to populate command line argments for the TimeoutSeconds.
 var ArgTimeoutSeconds int
@@ -38,10 +26,6 @@ func FillCobraCommand(cmd *cobra.Command) {
 	parmType := reflect.TypeOf(cmdLineParm)
 
 	common.AttachStringArg(cmd, parmType, "Namespace", &ArgNamespace)
-	common.AttachStringArg(cmd, parmType, "SourceDir", &ArgSourceDir)
-	common.AttachStringArg(cmd, parmType, "IdentityHost", &ArgIdentityHost)
-	common.AttachStringArg(cmd, parmType, "IngressIP", &ArgIngressIP)
-	common.AttachStringArg(cmd, parmType, "MQHost", &ArgMQHost)
 
 	common.AttachBoolArg(cmd, parmType, "Interactive", &ArgInteractive)
 
