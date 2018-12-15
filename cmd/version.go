@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/doug4j/acdu/pkg/common"
 	"github.com/doug4j/acdu/pkg/generate/genprocbun"
@@ -41,37 +42,30 @@ var versionCmd = &cobra.Command{
 	Short: "Shows the version and other variables.",
 	Long:  `Shows the version and other variables.`,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		//Keeping this code present as there is a weird Mac printing thing on Emoji. Leaving in for future testing.
-		// common.LogOK("Hi")
-		// common.LogTime("Hi")
-		// common.LogWorking("Hi")
-		// common.LogWaitingForUser("Hi")
-		// common.LogError("Hi")
-		// common.LogWarn("Hi")
-		// common.LogNotImplemented("Hi")
-		// common.LogInfo("Hi")
-		// common.LogExit("Hi")
-
+		start := time.Now()
 		common.LogInfo(fmt.Sprintf(`Build Info
 - Version:         '%v' 
 - Branch:          '%v'
 - Build Time:      '%v'
 - Has Uncommitted: '%v'
-- Commit Hash:     '%v'`, Version, Branch, BuildTime, HasUncommitted, CommitHash))
+- Commit Hash:     '%v'
+`, Version, Branch, BuildTime, HasUncommitted, CommitHash))
 		common.LogInfo(fmt.Sprintf(`Runtime Bundle Generator
 - Latest Supported Tag '%v' 
 - Downloader:          '%v'
-- Implementations:     '%v'`, genprocbun.LatestSupportedTag, genprocbun.DefaultDownloader, genprocbun.ImplementationsString()))
+- Implementations:     '%v'
+`, genprocbun.LatestSupportedTag, genprocbun.DefaultDownloader, genprocbun.ImplementationsString()))
 		common.LogInfo(fmt.Sprintf(`Cloud Connector Generator
 - Latest Supported Tag '%v' 
-- Implementations:     '%v'`, genproccon.LatestSupportedTag, genproccon.ImplementationsString()))
+- Implementations:     '%v'
+`, genproccon.LatestSupportedTag, genproccon.ImplementationsString()))
 		kubeAPI, err := common.LoadKubernetesAPI()
 		if err != nil {
 			common.LogExit("Cannot find Kubernetes API")
 		}
 		common.LogInfo(fmt.Sprintf(`Kubernetes
-- Client API     '%v'`, kubeAPI.RESTClient().APIVersion()))
+- Client API     '%v'
+`, kubeAPI.RESTClient().APIVersion()))
 		kubectlVersion, err := common.Command("kubectl", []string{"version"}, "", "Kubectl Version")
 		if err != nil {
 			common.LogExit(fmt.Sprintf("Cannot get kubectl version:%v", err))
@@ -84,6 +78,9 @@ var versionCmd = &cobra.Command{
 		}
 		common.LogInfo(fmt.Sprintf(`Helm version
 %v`, helmVersion))
+		end := time.Now()
+		elapsed := end.Sub(start)
+		common.LogTime(fmt.Sprintf("Total Elapsed time: %v", elapsed.Round(time.Millisecond)))
 	},
 }
 
